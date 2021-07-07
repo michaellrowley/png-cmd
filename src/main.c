@@ -42,6 +42,7 @@ typedef struct png_chunk {
 	unsigned char* name;//[4];
 	BYTE* data; // Allocated using calloc so free this when you're finished.
 	unsigned int checksum; // CRC32.
+	unsigned int real_checksum; // A CRC32 calculated by png-chunks.
 } chunk, *pchunk;
 typedef struct ihdr_data {
 // | <--4--> | <--4--> | <---1---> | <----1----> | <----1----> | <---1---> | <---1---> |
@@ -55,6 +56,39 @@ typedef struct ihdr_data {
 	BYTE filter_type;
 	BYTE interlace_type;
 } ihdr_data, *pihdr_data;
+
+void chunk_crc32( chunk* chunk_ptr ) {
+	// Initial algorithm taken from: https://stackoverflow.com/a/21001712
+	// with minor adjustments made to fit the current context.
+	unsigned int byte, crc, mask;
+
+	if ( chunk_ptr->data == nullptr ) {
+		chunk_ptr->real_checksum = 0x0;
+		return;
+	}
+
+	crc = 0xFFFFFFFF;
+	// Name
+	for ( unsigned char i = 0; i < 4; i++ ) {
+		byte = chunk_ptr->name[i];            // Get next byte.
+		crc = crc ^ byte;
+		for (char j = 7; j >= 0; j--) {    // Do eight times.
+			mask = -(crc & 1);
+			crc = (crc >> 1) ^ (0xEDB88320 & mask);
+		}
+	}
+	// Data
+	for ( unsigned int i = 0; i < chunk_ptr->size; i++ ) {
+		byte = chunk_ptr->data[i];            // Get next byte.
+		crc = crc ^ byte;
+		for (char j = 7; j >= 0; j--) {    // Do eight times.
+			mask = -(crc & 1);
+			crc = (crc >> 1) ^ (0xEDB88320 & mask);
+		}
+	}
+	chunk_ptr->real_checksum = ~crc;
+	return TRUE;
+}
 
 // If max_length == 0 we assume the developer intended to specify
 // 'unlimited' and disregard the buffer's size.
@@ -122,6 +156,9 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	}
 	current_chunk.checksum = *( (int*)crc_buffer );
 
+	// Real CRC32
+	chunk_crc32( &current_chunk );
+
 	*buffer = current_chunk;
 	return TRUE;
 }
@@ -167,9 +204,9 @@ BOOL list_ascillary_full( FILE* png_handle ) {
 	chunk iterative_chunk;
 	ihdr_data ihdr;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		printf( "%s\n|_|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n\n",
+		printf( "%s\n|_|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |+++ Real CRC32: 0x%08X\n\n",
 			iterative_chunk.name, (unsigned int)iterative_chunk.location.__pos,
-			iterative_chunk.size, iterative_chunk.checksum );
+			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
 			continue;
 		}
