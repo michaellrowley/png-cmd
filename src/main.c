@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 #ifndef BYTE
 #define BYTE char
@@ -70,24 +71,24 @@ void chunk_crc32( chunk* chunk_ptr ) {
 	crc = 0xFFFFFFFF;
 	// Name
 	for ( unsigned char i = 0; i < 4; i++ ) {
-		byte = chunk_ptr->name[i];            // Get next byte.
+		byte = chunk_ptr->name[i];
 		crc = crc ^ byte;
-		for (char j = 7; j >= 0; j--) {    // Do eight times.
+		for (char j = 7; j >= 0; j--) {
 			mask = -(crc & 1);
 			crc = (crc >> 1) ^ (0xEDB88320 & mask);
 		}
 	}
 	// Data
 	for ( unsigned int i = 0; i < chunk_ptr->size; i++ ) {
-		byte = chunk_ptr->data[i];            // Get next byte.
+		byte = chunk_ptr->data[i];
 		crc = crc ^ byte;
-		for (char j = 7; j >= 0; j--) {    // Do eight times.
+		for (char j = 7; j >= 0; j--) {
 			mask = -(crc & 1);
 			crc = (crc >> 1) ^ (0xEDB88320 & mask);
 		}
 	}
 	chunk_ptr->real_checksum = ~crc;
-	return TRUE;
+	return;
 }
 
 // If max_length == 0 we assume the developer intended to specify
@@ -273,6 +274,15 @@ int main( int argc, char** argv ) {
 
 		return -1;
 	}
+
+	struct stat* png_stat = (struct stat*)calloc( 1, sizeof( struct stat ) );
+	if ( png_stat == nullptr || stat( argv[1], png_stat ) == -1 ||
+		!S_ISREG( png_stat->st_mode ) ) {
+		
+		printf( "Unable to validate the filetype of file '%s'.\n", argv[1] );
+		return -1;
+	}
+	free( png_stat );
 
 	FILE* png_handle = fopen( argv[ 1 ], "r+" );
 	if ( !png_handle ) {
