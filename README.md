@@ -1,7 +1,7 @@
 ![Issues](https://img.shields.io/github/issues/michaellrowley/png-chunks) ![Forks](https://img.shields.io/github/forks/michaellrowley/png-chunks) ![Stars](https://img.shields.io/github/stars/michaellrowley/png-chunks) ![License](https://img.shields.io/github/license/michaellrowley/png-chunks) ![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmichaellrowley%2Fpng-chunks)
 
 # PNG-Chunks:
-This is a small ( < 300 lines ) tool I have written to help me learn about [the file structure of PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics) by using sample files and enumerating their chunks.
+This is a small ( ~300 lines ) tool I have written to help me learn about [the file structure of PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics) by using sample files and enumerating their chunks.
 
 In ``/samples/`` there are a few PNG files that you can use for testing chunk extraction!
 
@@ -19,6 +19,7 @@ IHDR
  |--- Location: 0x00000008
  |--- Size: 0x0000000D
  |--- CRC32: 0x000001E2
+ |--- Real CRC32: 0xFFFFFFFF
 
 IDAT
 |_|
@@ -26,6 +27,7 @@ IDAT
  |--- Location: 0x00000021
  |--- Size: 0x000631E5
  |--- CRC32: 0x00000135
+ |--- Real CRC32: 0xFFFFFFFF
 
 IEND
 |_|
@@ -33,7 +35,7 @@ IEND
  |--- Location: 0x00063212
  |--- Size: 0x00000000
  |--- CRC32: 0x000001D2
-
+ |--- Real CRC32: 0xFFFFFFFF
 
 File summary:
   Resolution: 2001 x 2066

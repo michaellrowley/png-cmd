@@ -91,6 +91,17 @@ void chunk_crc32( chunk* chunk_ptr ) {
 	return;
 }
 
+BOOL read_backwards( FILE* src_handle, BYTE* buf, unsigned char len ) {
+	// Assuming that 'buf' as already been allocated to an appropriate size.
+	for ( unsigned char index = 0; index < len; index++ ) {
+		buf[ ( len - 1 ) - index ] = fgetc( src_handle );
+		if ( feof( src_handle ) ) {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 // If max_length == 0 we assume the developer intended to specify
 // 'unlimited' and disregard the buffer's size.
 BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
@@ -108,14 +119,9 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	// 00 00 00 0D | 49 48 44 52 | ?? ?? ?? ?? | 12 A0 05 5F
 	//     SIZE    |     NAME    |     DATA    |    CRC32
 	// SIZE
-	BYTE size_buffer[ 4 ];
-	for ( unsigned char i = 0; i < 4; i++ ) {
-		size_buffer[ 3 - i ] = fgetc( handle );
-		if ( feof( handle ) ) {
-			return FALSE;
-		}
+	if ( !read_backwards( handle, (int*)&current_chunk.size, 4 ) ) {
+		return FALSE;
 	}
-	current_chunk.size = *( (int*)size_buffer );
 
 	// NAME
 	current_chunk.name = (char*)calloc( 4 + 1, sizeof( char ) );
@@ -148,14 +154,9 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	}
 
 	// CRC32
-	BYTE crc_buffer[4];
-	for ( unsigned char i = 0; i < 4; i++ ) {
-		crc_buffer[ 3 - i ] = fgetc( handle );
-	 	if ( feof( handle ) ) {
-			return FALSE;
-		}
+	if ( !read_backwards( handle, (BYTE*)&current_chunk.checksum, 4 ) ) {
+		return FALSE;
 	}
-	current_chunk.checksum = *( (int*)crc_buffer );
 
 	// Real CRC32
 	chunk_crc32( &current_chunk );
@@ -205,7 +206,7 @@ BOOL list_ascillary_full( FILE* png_handle ) {
 	chunk iterative_chunk;
 	ihdr_data ihdr;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		printf( "%s\n|_|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |+++ Real CRC32: 0x%08X\n\n",
+		printf( "%s\n|_|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |--- Real CRC32: 0x%08X\n\n",
 			iterative_chunk.name, (unsigned int)iterative_chunk.location.__pos,
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
