@@ -83,9 +83,9 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	current_chunk.size = *( (int*)size_buffer );
 
 	// NAME
-	current_chunk.name = (char*)calloc( 5, sizeof( char ) );
+	current_chunk.name = (char*)calloc( 4 + 1, sizeof( char ) );
 	for ( unsigned char i = 0; i < 4; i++ ) {
-		current_chunk.name[ i ] = (char)fgetc( handle );
+		current_chunk.name[ i ] = fgetc( handle );
 		if ( feof( handle ) ) {
 			return FALSE;
 		}
@@ -113,12 +113,14 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	}
 
 	// CRC32
+	BYTE crc_buffer[4];
 	for ( unsigned char i = 0; i < 4; i++ ) {
-		current_chunk.checksum += (int)fgetc( handle );
-		if ( feof( handle ) ) {
+		crc_buffer[ 3 - i ] = fgetc( handle );
+	 	if ( feof( handle ) ) {
 			return FALSE;
 		}
 	}
+	current_chunk.checksum = *( (int*)crc_buffer );
 
 	*buffer = current_chunk;
 	return TRUE;
@@ -184,7 +186,7 @@ BOOL list_ascillary_full( FILE* png_handle ) {
 BOOL strip_chunk( FILE* png_handle, const char* chunk_name ) {
 	chunk iterative_chunk;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		if ( strncmp( iterative_chunk.name, chunk_name, strlen( chunk_name ) ) != 0 ) {
+		if ( strncmp( iterative_chunk.name, chunk_name, 4 ) != 0 ) {
 			continue;
 		}
 
