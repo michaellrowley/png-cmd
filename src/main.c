@@ -202,7 +202,7 @@ BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 	return TRUE;
 }
 
-BOOL list_ascillary_full( FILE* png_handle ) {
+BOOL list_ancillary_full( FILE* png_handle ) {
 	chunk iterative_chunk;
 	ihdr_data ihdr;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
@@ -312,7 +312,7 @@ int main( int argc, char** argv ) {
 	printf( "Validated PNG magic bytes.\n" );
 
 	if ( argc == 2 ) {
-		list_ascillary_full( png_handle );		
+		list_ancillary_full( png_handle );		
 	}
 	else {
 		strip_chunk( png_handle, argv[ 2 ] );
