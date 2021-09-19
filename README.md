@@ -14,7 +14,7 @@ root$ ./PNG_chunks samples/firefox.png
 
 Validated PNG magic bytes.
 IHDR
-|_|
+|0|
  |
  |--- Location: 0x00000008
  |--- Size: 0x0000000D
@@ -22,7 +22,7 @@ IHDR
  |--- Real CRC32: 0xFFFFFFFF
 
 IDAT
-|_|
+|1|
  |
  |--- Location: 0x00000021
  |--- Size: 0x000631E5
@@ -30,7 +30,7 @@ IDAT
  |--- Real CRC32: 0xFFFFFFFF
 
 IEND
-|_|
+|1|
  |
  |--- Location: 0x00063212
  |--- Size: 0x00000000

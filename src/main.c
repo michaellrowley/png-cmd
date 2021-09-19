@@ -214,17 +214,21 @@ BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 BOOL list_ancillary_full( FILE* png_handle ) {
 	chunk iterative_chunk;
 	ihdr_data ihdr;
+	unsigned int iterative_chunk_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		printf( "%s\n|_|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |--- Real CRC32: 0x%08X\n\n",
-			iterative_chunk.name, (unsigned int)iterative_chunk.location.__pos,
+		printf( "%s\n|%d|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |--- Real CRC32: 0x%08X\n\n",
+			iterative_chunk.name, iterative_chunk_index,
+			(unsigned int)iterative_chunk.location.__pos,
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
+			iterative_chunk_index++;
 			continue;
 		}
 		if ( !parse_ihdr( iterative_chunk.data, &ihdr ) ) {
 			printf( "Unable to parse IHDR\n" );
 			return FALSE;
 		}
+		iterative_chunk_index++;
 	}
 	printf( "\nFile summary:\n\tResolution: %d x %d\n\tBit-depth: %d\n\tColour-type: %d\n\n",
 		ihdr.width, ihdr.height, ihdr.bit_depth, ihdr.colour_type );
