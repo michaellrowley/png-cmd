@@ -30,7 +30,7 @@ IDAT
  |--- Real CRC32: 0xFFFFFFFF
 
 IEND
-|1|
+|2|
  |
  |--- Location: 0x00063212
  |--- Size: 0x00000000
