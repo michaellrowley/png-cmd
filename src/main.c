@@ -235,12 +235,15 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	return TRUE;
 }
 
-BOOL strip_chunk_by_index( FILE* png_handle, const int chunk_index ) {
+BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 	chunk iterative_chunk;
-	int current_chunk_index = 0;
+	int chunk_total_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		if ( current_chunk_index != chunk_index ) {
-			current_chunk_index++;
+		if ( ( chunk_name != nullptr && strncmp( iterative_chunk.name,
+				chunk_name, 4 ) != 0 ) ||
+			 ( chunk_index != -1 && chunk_total_index != chunk_index ) ) {
+
+			chunk_total_index++;
 			continue;
 		}
 
@@ -248,51 +251,7 @@ BOOL strip_chunk_by_index( FILE* png_handle, const int chunk_index ) {
 		if ( 0 != fseek( png_handle, iterative_chunk.location.__pos + 4, SEEK_SET ) ) {
 			printf( "Unable to perform an IO operation while wiping chunk '%s'.\n",
 				iterative_chunk.name );
-			current_chunk_index++;
-			continue;
-		}
-
-		// Adding eight to iterative_chunk.size allows us to
-		// overwrite the CRC32 which could provide information
-		// to anyone that needs to narrow down the possible
-		// value(s) of the chunk we are wiping.
-		// That only accounts for four bytes though (CRC32 =
-		// four byte integer in PNG) - the other four bytes
-		// are the chunk's identifier (four 1-byte characters)
-		// so that anyone analyzing the PNG also can't tell
-		// what chunk was previously there.
-		for ( unsigned short byte_index = 0; byte_index < iterative_chunk.size + 8; byte_index++ ) {
-			if ( 0 != fputc( (char)0x0, png_handle ) ) {
-				printf( "Unable to write to chunk '%s'.\n", iterative_chunk.name );
-			}
-			if ( feof( png_handle ) ) {
-				printf( "Unable to write at 0x%08X (chunk '%s').",
-					(unsigned int)( iterative_chunk.location.__pos + byte_index ),
-					iterative_chunk.name );
-				return FALSE;
-			}
-		}
-
-		printf( "Filled '%s' with null bytes.\n", iterative_chunk.name );
-		current_chunk_index++;
-		return TRUE;
-	}
-
-	printf( "Unable to locate chunk '%s' within the provided file.\n", iterative_chunk.name );
-	return FALSE;
-}
-
-BOOL strip_chunk( FILE* png_handle, const char* chunk_name ) {
-	chunk iterative_chunk;
-	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		if ( strncmp( iterative_chunk.name, chunk_name, 4 ) != 0 ) {
-			continue;
-		}
-
-		// Found the chunk!		
-		if ( 0 != fseek( png_handle, iterative_chunk.location.__pos + 4, SEEK_SET ) ) {
-			printf( "Unable to perform an IO operation while wiping chunk '%s'.\n",
-				iterative_chunk.name );
+			chunk_total_index++;
 			continue;
 		}
 
@@ -345,7 +304,7 @@ int main( int argc, char** argv ) {
 	}
 	free( png_stat );
 
-	FILE* png_handle = fopen( argv[ 1 ], "r+" );
+	const FILE* png_handle = fopen( argv[ 1 ], "r+" );
 	if ( !png_handle ) {
 		printf( "Unable to open a handle to file '%s'.\n", argv[ 1 ] );
 		return -1;
@@ -384,10 +343,10 @@ int main( int argc, char** argv ) {
 				 strcmp( operation, "-s" ) == 0 ) {
 				if ( is_string_number( argument, strlen( argument ) ) ) {
 					int chunk_index = atoi( argument );
-					strip_chunk_by_index( png_handle, chunk_index );
+					strip_chunk( png_handle, nullptr, chunk_index );
 				}
 				else {
-					strip_chunk( png_handle, argv[ 3 ] );
+					strip_chunk( png_handle, argv[ 3 ], -1 );
 				}
 			}
 			else {
