@@ -72,7 +72,7 @@ typedef struct ihdr_data {
 void chunk_crc32( chunk* chunk_ptr ) {
 	// Initial algorithm taken from: https://stackoverflow.com/a/21001712
 	// with minor adjustments made to fit the current context.
-	unsigned int byte, crc, mask;
+	uint32_t byte, crc, mask;
 
 	if ( chunk_ptr->data == nullptr ) {
 		chunk_ptr->real_checksum = 0x0;
@@ -90,7 +90,7 @@ void chunk_crc32( chunk* chunk_ptr ) {
 		}
 	}
 	// Data
-	for ( unsigned int i = 0; i < chunk_ptr->size; i++ ) {
+	for ( uint32_t i = 0; i < chunk_ptr->size; i++ ) {
 		byte = chunk_ptr->data[i];
 		crc = crc ^ byte;
 		for (char j = 7; j >= 0; j--) {
