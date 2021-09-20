@@ -363,8 +363,13 @@ int main( int argc, char** argv ) {
 			if ( strcmp( operation, "--strip" ) == 0 ||
 				 strcmp( operation, "-s" ) == 0 ) {
 				if ( is_string_number( argument, strlen( argument ) ) ) {
-					int chunk_index = atoi( argument );
-					strip_chunk( png_handle, nullptr, chunk_index );
+					// int chunk_index = atoi( argument );
+					long target_chunk_index = strtol( argument, ( char** )nullptr, 10 );
+					if ( target_chunk_index > INT_MAX || target_chunk_index < INT_MIN ) {
+						printf( "Chunk index unable to be casted to an int.\n" );
+						return -1;
+					}
+					strip_chunk( png_handle, nullptr, (int)target_chunk_index );
 				}
 				else {
 					strip_chunk( png_handle, argv[ 3 ], -1 );
