@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <limits.h>
 #include <sys/stat.h>
 
@@ -49,18 +50,18 @@ BOOL read_bytes( FILE* handle, size_t len, BYTE* buffer ) {
 
 typedef struct png_chunk {
 	fpos_t location; // Offset in file.
-	int size; // Not including name or checksum.
+	int32_t size; // Not including name or checksum.
 	unsigned char* name;//[4];
 	BYTE* data; // Allocated using calloc so free this when you're finished.
-	unsigned int checksum; // CRC32.
-	unsigned int real_checksum; // A CRC32 calculated by png-chunks.
+	uint32_t checksum; // CRC32.
+	uint32_t real_checksum; // A CRC32 calculated by png-chunks.
 } chunk, *pchunk;
 typedef struct ihdr_data {
 // | <--4--> | <--4--> | <---1---> | <----1----> | <----1----> | <---1---> | <---1---> |
 // | width   | height  | bit-depth | colour-type | compression |   filter  | interlace |
 //      4    +    4    +     1     +      1      +      1      +     1     +     1     = 13 bytes.
-	int width;
-	int height;
+	int32_t width;
+	int32_t height;
 	BYTE bit_depth;
 	BYTE colour_type;
 	BYTE compression_type;
