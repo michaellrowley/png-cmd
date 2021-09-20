@@ -224,12 +224,15 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
 			iterative_chunk_index++;
+			free( iterative_chunk.name );
 			continue;
 		}
 		if ( !parse_ihdr( iterative_chunk.data, &ihdr ) ) {
 			printf( "Unable to parse IHDR\n" );
+			free( iterative_chunk.name );
 			return FALSE;
 		}
+		free( iterative_chunk.name );
 		iterative_chunk_index++;
 	}
 	printf( "\nFile summary:\n\tResolution: %d x %d\n\tBit-depth: %d\n\tColour-type: %d\n\n",
