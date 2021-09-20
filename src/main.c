@@ -137,6 +137,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	for ( unsigned char i = 0; i < 4; i++ ) {
 		current_chunk.name[ i ] = fgetc( handle );
 		if ( feof( handle ) ) {
+			free( current_chunk.name );
 			return FALSE;
 		}
 	}
@@ -156,7 +157,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 			current_chunk.data[ i ] = fgetc( handle );
 			if ( feof( handle ) ) {
 				free( current_chunk.data );
-			free( current_chunk.name );
+				free( current_chunk.name );
 				return FALSE;
 			}
 		}
