@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <limits.h>
 #include <sys/stat.h>
 
 #ifndef BYTE
@@ -218,6 +219,10 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	ihdr_data ihdr;
 	unsigned int iterative_chunk_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
+		if ( iterative_chunk_index == UINT_MAX ) {
+			return FALSE;
+		}
+
 		printf( "%s\n|%d|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |--- Real CRC32: 0x%08X\n\n",
 			iterative_chunk.name, iterative_chunk_index,
 			(unsigned int)iterative_chunk.location.__pos,
@@ -242,13 +247,17 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 
 BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 	chunk iterative_chunk;
-	int chunk_total_index = 0;
+	unsigned int chunk_iterative_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
+		if ( chunk_iterative_index == UINT_MAX ) {
+			return FALSE;
+		}
+
 		if ( ( chunk_name != nullptr && strncmp( iterative_chunk.name,
 				chunk_name, 4 ) != 0 ) ||
-			 ( chunk_index != -1 && chunk_total_index != chunk_index ) ) {
+			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
 
-			chunk_total_index++;
+			chunk_iterative_index++;
 			continue;
 		}
 
@@ -256,7 +265,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 		if ( 0 != fseek( png_handle, iterative_chunk.location.__pos + 4, SEEK_SET ) ) {
 			printf( "Unable to perform an IO operation while wiping chunk '%s'.\n",
 				iterative_chunk.name );
-			chunk_total_index++;
+			chunk_iterative_index++;
 			continue;
 		}
 
