@@ -224,7 +224,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 			return FALSE;
 		}
 
-		printf( "%s\n|%d|\n |\n |--- Location: 0x%08X\n |--- Size: 0x%08X\n |--- CRC32: 0x%08X\n |--- Real CRC32: 0x%08X\n\n",
+		printf( "%s\n|%u|\n |\n |--- Location: 0x%X\n |--- Size: 0x%X\n |--- CRC32: 0x%X\n |--- Real CRC32: 0x%X\n\n",
 			iterative_chunk.name, iterative_chunk_index,
 			(unsigned int)iterative_chunk.location.__pos,
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
