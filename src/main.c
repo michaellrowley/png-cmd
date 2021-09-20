@@ -165,6 +165,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 
 	// CRC32
 	if ( !read_backwards( handle, (BYTE*)&current_chunk.checksum, 4 ) ) {
+		free( current_chunk.name );
 		return FALSE;
 	}
 
