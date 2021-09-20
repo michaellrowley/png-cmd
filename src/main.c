@@ -220,6 +220,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	unsigned int iterative_chunk_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
 		if ( iterative_chunk_index == UINT_MAX ) {
+			free( iterative_chunk.name );
 			return FALSE;
 		}
 
@@ -250,6 +251,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 	unsigned int chunk_iterative_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
 		if ( chunk_iterative_index == UINT_MAX ) {
+			free( iterative_chunk.name );
 			return FALSE;
 		}
 
@@ -258,6 +260,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
 
 			chunk_iterative_index++;
+			free( iterative_chunk.name );
 			continue;
 		}
 
@@ -266,6 +269,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 			printf( "Unable to perform an IO operation while wiping chunk '%s'.\n",
 				iterative_chunk.name );
 			chunk_iterative_index++;
+			free( iterative_chunk.name );
 			continue;
 		}
 
@@ -286,15 +290,18 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 				printf( "Unable to write at 0x%08X (chunk '%s').",
 					(unsigned int)( iterative_chunk.location.__pos + byte_index ),
 					iterative_chunk.name );
+			free( iterative_chunk.name );
 				return FALSE;
 			}
 		}
 
 		printf( "Filled '%s' with null bytes.\n", iterative_chunk.name );
+		free( iterative_chunk.name );
 		return TRUE;
 	}
 
 	printf( "Unable to locate chunk '%s' within the provided file.\n", iterative_chunk.name );
+	free( iterative_chunk.name );
 	return FALSE; // We couldn't find that chunk.
 }
 
