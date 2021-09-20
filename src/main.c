@@ -290,7 +290,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 				printf( "Unable to write at 0x%08X (chunk '%s').",
 					(unsigned int)( iterative_chunk.location.__pos + byte_index ),
 					iterative_chunk.name );
-			free( iterative_chunk.name );
+				free( iterative_chunk.name );
 				return FALSE;
 			}
 		}
@@ -356,14 +356,13 @@ int main( int argc, char** argv ) {
 	}
 	else {
 		if ( argc == 4 ) {
-			// ./program image.png --strip 0
 			const char* operation = argv[ 2 ]; // type of operation
 			const char* argument = argv[ 3 ];
 
 			if ( strcmp( operation, "--strip" ) == 0 ||
 				 strcmp( operation, "-s" ) == 0 ) {
 				if ( is_string_number( argument, strlen( argument ) ) ) {
-					// int chunk_index = atoi( argument );
+					// ./program image.png --strip 0
 					long target_chunk_index = strtol( argument, ( char** )nullptr, 10 );
 					if ( target_chunk_index > INT_MAX || target_chunk_index < INT_MIN ) {
 						printf( "Chunk index unable to be casted to an int.\n" );
@@ -372,6 +371,7 @@ int main( int argc, char** argv ) {
 					strip_chunk( png_handle, nullptr, (int)target_chunk_index );
 				}
 				else {
+					// ./program image.png --strip IHDR
 					strip_chunk( png_handle, argv[ 3 ], -1 );
 				}
 			}
