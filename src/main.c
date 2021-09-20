@@ -51,7 +51,7 @@ BOOL read_bytes( FILE* handle, size_t len, BYTE* buffer ) {
 typedef struct png_chunk {
 	fpos_t location; // Offset in file.
 	int32_t size; // Not including name or checksum.
-	unsigned char* name;//[4];
+	unsigned char name [ 5 ]; // Don't print without '%.4s' to avoid over-reads/ID.
 	BYTE* data; // Allocated using calloc so free this when you're finished.
 	uint32_t checksum; // CRC32.
 	uint32_t real_checksum; // A CRC32 calculated by png-chunks.
@@ -135,11 +135,10 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	}
 
 	// NAME
-	current_chunk.name = (char*)calloc( 4 + 1, sizeof( char ) );
+	// current_chunk.name = (char*)calloc( 4 + 1, sizeof( char ) );
 	for ( unsigned char i = 0; i < 4; i++ ) {
 		current_chunk.name[ i ] = fgetc( handle );
 		if ( feof( handle ) ) {
-			free( current_chunk.name );
 			return FALSE;
 		}
 	}
@@ -148,8 +147,6 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	if ( current_chunk.size > max_length && max_length != 0 ) {
 		current_chunk.data = (BYTE*)nullptr; // Ignore it.
 		if ( fseek( handle, current_chunk.size, SEEK_CUR ) != 0x0 ) {
-			free( current_chunk.data );
-			free( current_chunk.name );
 			return FALSE;
 		}
 	}
@@ -159,7 +156,6 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 			current_chunk.data[ i ] = fgetc( handle );
 			if ( feof( handle ) ) {
 				free( current_chunk.data );
-				free( current_chunk.name );
 				return FALSE;
 			}
 		}
@@ -167,7 +163,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 
 	// CRC32
 	if ( !read_backwards( handle, (BYTE*)&current_chunk.checksum, 4 ) ) {
-		free( current_chunk.name );
+		free( current_chunk.data );
 		return FALSE;
 	}
 
@@ -221,7 +217,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	unsigned int iterative_chunk_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
 		if ( iterative_chunk_index == UINT_MAX ) {
-			free( iterative_chunk.name );
+			free( iterative_chunk.data );
 			return FALSE;
 		}
 
@@ -231,15 +227,15 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
 			iterative_chunk_index++;
-			free( iterative_chunk.name );
+			free( iterative_chunk.data );
 			continue;
 		}
 		if ( !parse_ihdr( iterative_chunk.data, &ihdr ) ) {
 			printf( "Unable to parse IHDR\n" );
-			free( iterative_chunk.name );
+			free( iterative_chunk.data );
 			return FALSE;
 		}
-		free( iterative_chunk.name );
+		free( iterative_chunk.data );
 		iterative_chunk_index++;
 	}
 	printf( "\nFile summary:\n\tResolution: %d x %d\n\tBit-depth: %d\n\tColour-type: %d\n\n",
@@ -252,7 +248,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 	unsigned int chunk_iterative_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
 		if ( chunk_iterative_index == UINT_MAX ) {
-			free( iterative_chunk.name );
+			free( iterative_chunk.data );
 			return FALSE;
 		}
 
@@ -261,16 +257,16 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
 
 			chunk_iterative_index++;
-			free( iterative_chunk.name );
+			free( iterative_chunk.data );
 			continue;
 		}
 
 		// Found the chunk!		
 		if ( 0 != fseek( png_handle, iterative_chunk.location.__pos + 4, SEEK_SET ) ) {
-			printf( "Unable to perform an IO operation while wiping chunk '%s'.\n",
+			printf( "Unable to perform an IO operation while wiping chunk '%.4s'.\n",
 				iterative_chunk.name );
 			chunk_iterative_index++;
-			free( iterative_chunk.name );
+			free( iterative_chunk.data );
 			continue;
 		}
 
@@ -285,24 +281,23 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 		// what chunk was previously there.
 		for ( unsigned short byte_index = 0; byte_index < iterative_chunk.size + 8; byte_index++ ) {
 			if ( 0 != fputc( (char)0x0, png_handle ) ) {
-				printf( "Unable to write to chunk '%s'.\n", iterative_chunk.name );
+				printf( "Unable to write to chunk '%.4s'.\n", iterative_chunk.name );
 			}
 			if ( feof( png_handle ) ) {
-				printf( "Unable to write at 0x%08X (chunk '%s').",
+				printf( "Unable to write at 0x%08X (chunk '%.4s').",
 					(unsigned int)( iterative_chunk.location.__pos + byte_index ),
 					iterative_chunk.name );
-				free( iterative_chunk.name );
+				free( iterative_chunk.data );
 				return FALSE;
 			}
 		}
 
-		printf( "Filled '%s' with null bytes.\n", iterative_chunk.name );
-		free( iterative_chunk.name );
+		printf( "Filled '%.4s' with null bytes.\n", iterative_chunk.name );
+		free( iterative_chunk.data );
 		return TRUE;
 	}
 
-	printf( "Unable to locate chunk '%s' within the provided file.\n", iterative_chunk.name );
-	free( iterative_chunk.name );
+	printf( "Unable to locate chunk '%.4s' within the provided file.\n", iterative_chunk.name );
 	return FALSE; // We couldn't find that chunk.
 }
 
