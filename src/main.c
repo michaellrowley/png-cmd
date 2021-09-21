@@ -246,7 +246,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
 	chunk iterative_chunk;
 	unsigned int chunk_iterative_index = 0;
-	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
+	while ( read_chunk( png_handle, 0, &iterative_chunk ) ) {
 		if ( chunk_iterative_index == UINT_MAX ) {
 			free( iterative_chunk.data );
 			return FALSE;
@@ -316,6 +316,7 @@ int main( int argc, char** argv ) {
 	if ( png_stat == nullptr || stat( argv[1], png_stat ) == -1 ||
 		!S_ISREG( png_stat->st_mode ) ) {
 		
+		free( png_stat );
 		printf( "Unable to validate the filetype of file '%s'.\n", argv[1] );
 		return -1;
 	}
