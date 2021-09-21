@@ -150,7 +150,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 			return FALSE;
 		}
 	}
-	else {
+	else if ( current_chunk.size != 0 ) {
 		current_chunk.data = calloc( current_chunk.size, sizeof(BYTE) );
 		for ( unsigned int i = 0; i < current_chunk.size; i++ ) {
 			current_chunk.data[ i ] = fgetc( handle );
@@ -243,7 +243,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	return TRUE;
 }
 
-BOOL strip_chunk( FILE* png_handle, const char* chunk_name, int chunk_index ) {
+BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_index ) {
 	chunk iterative_chunk;
 	unsigned int chunk_iterative_index = 0;
 	while ( read_chunk( png_handle, 0, &iterative_chunk ) ) {
