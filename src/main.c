@@ -268,7 +268,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 				iterative_chunk.name );
 			chunk_iterative_index++;
 			free( iterative_chunk.data );
-			continue;
+			return FALSE;
 		}
 
 		// Adding eight to iterative_chunk.size allows us to
