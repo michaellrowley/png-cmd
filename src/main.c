@@ -1,10 +1,3 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <limits.h>
-#include <sys/stat.h>
 #include "png-chunks.h"
 
 void free_chunk( pchunk chnk ) {
@@ -19,20 +12,6 @@ BOOL is_string_number( const char* string, size_t len ) {
 		if ( !isdigit( string[ i ] ) ) {
 			return FALSE;
 		}
-	}
-	return TRUE;
-}
-
-BOOL read_bytes( FILE* handle, size_t len, BYTE* buffer ) {
-	if ( buffer == nullptr || len == 0 ) {
-		return FALSE;
-	}
-	for ( size_t i = 0; i < len; i++ ) {
-		BYTE iterative_byte = fgetc( handle );
-		if ( feof( handle ) ) {
-			return FALSE;
-		}
-		buffer[ i ] = iterative_byte;
 	}
 	return TRUE;
 }

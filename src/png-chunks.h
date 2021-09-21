@@ -1,21 +1,17 @@
-#ifndef BYTE
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <limits.h>
+#include <sys/stat.h>
+
 #define BYTE char
-#endif
-#ifndef BOOL
 #define BOOL bool
-#endif
-#ifndef TRUE
 #define TRUE true
-#endif
-#ifndef FALSE
 #define FALSE false
-#endif
-#ifndef nullptr
 #define nullptr 0x0
-#endif
-#ifndef NULL
 #define NULL 0
-#endif
 
 typedef struct png_chunk {
 	fpos_t location; // Offset in file.
@@ -38,3 +34,5 @@ typedef struct ihdr_data {
 	BYTE filter_type;
 	BYTE interlace_type;
 } ihdr_data, *pihdr_data;
+
+BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer );
