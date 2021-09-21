@@ -27,67 +27,6 @@ BOOL read_backwards( FILE* src_handle, BYTE* buf, unsigned char len ) {
 	return TRUE;
 }
 
-// If max_length == 0 we assume the developer intended to specify
-// 'unlimited' and disregard the buffer's size.
-BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
-	// Assuming that the handle's
-	// read position is currently
-	// positioned at the start of
-	// the chunk.
-	chunk current_chunk = { .size = 0, .data = nullptr, .checksum = 0x0,
-		.location = 0 };
-
-	if ( fgetpos( handle, &current_chunk.location ) != 0 ) {
-		return FALSE;
-	}
-
-	// 00 00 00 0D | 49 48 44 52 | ?? ?? ?? ?? | 12 A0 05 5F
-	//     SIZE    |     NAME    |     DATA    |    CRC32
-	// SIZE
-	if ( !read_backwards( handle, (int*)&current_chunk.size, 4 ) ) {
-		return FALSE;
-	}
-
-	// NAME
-	// current_chunk.name = (char*)calloc( 4 + 1, sizeof( char ) );
-	for ( unsigned char i = 0; i < 4; i++ ) {
-		current_chunk.name[ i ] = fgetc( handle );
-		if ( feof( handle ) ) {
-			return FALSE;
-		}
-	}
-
-	// DATA
-	if ( current_chunk.size > max_length && max_length != 0 ) {
-		current_chunk.data = (BYTE*)nullptr; // Ignore it.
-		if ( fseek( handle, current_chunk.size, SEEK_CUR ) != 0x0 ) {
-			return FALSE;
-		}
-	}
-	else if ( current_chunk.size != 0 ) {
-		current_chunk.data = calloc( current_chunk.size, sizeof(BYTE) );
-		for ( unsigned int i = 0; i < current_chunk.size; i++ ) {
-			current_chunk.data[ i ] = fgetc( handle );
-			if ( feof( handle ) ) {
-				free( current_chunk.data );
-				return FALSE;
-			}
-		}
-	}
-
-	// CRC32
-	if ( !read_backwards( handle, (BYTE*)&current_chunk.checksum, 4 ) ) {
-		free( current_chunk.data );
-		return FALSE;
-	}
-
-	// Real CRC32
-	chunk_crc( &current_chunk );
-
-	*buffer = current_chunk;
-	return TRUE;
-}
-
 BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 	ihdr_data ihdr_output = { .width = 0, .height = 0, .bit_depth = 1,
 		.colour_type = 1, .compression_type = 1, .filter_type = 1,
@@ -96,6 +35,8 @@ BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 	//  4b    +  4b  = [8b]/64B
 	// Height & width:
 	for ( unsigned char i = 0; i < 4; i++ ) {
+		// Using one loop instead of calling read_backwards twice
+		// should save some time.
 		( (BYTE*)(&ihdr_output.width)) [ 3 - i ] = data[ i ];
 		( (BYTE*)(&ihdr_output.height)) [ 3 - i ] = data[ i + 4 ];
 		// w0 w0 w0 w0 | h0 h0 h0 h0

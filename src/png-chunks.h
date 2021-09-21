@@ -35,5 +35,7 @@ typedef struct ihdr_data {
 	BYTE interlace_type;
 } ihdr_data, *pihdr_data;
 
-BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer ); // FileIO.c
-void chunk_crc( chunk* chunk_ptr );
+BOOL read_chunk( FILE* file_handle, size_t max_length,
+	chunk* output_buffer ); // png_chunk.c
+BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer ); // file_io.c
+void chunk_crc( chunk* chunk_ptr ); // png_chunk.c
