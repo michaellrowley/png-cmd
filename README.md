@@ -56,12 +56,12 @@ Erasing critical (fully-capitalized) chunks will result in parsing errors when t
 
 
 ## Building:
-Compiling PNG-chunks should be pretty simple, I compiled it on Windows 11 using the Windows Ubuntu subsystem with [GCC](https://gcc.gnu.org/), while I was developing the program I did all of the debugging in [GDB](https://www.gnu.org/software/gdb/) so if you have any errors while trying to work with other alternatives, it might be worth trying to use GCC/GDB to resolve your issue.
+Compiling PNG-chunks should be pretty simple, I compiled it on Windows using WSL with [GCC](https://gcc.gnu.org/), while I was developing the program I did all of the debugging in [GDB](https://www.gnu.org/software/gdb/) so if you have any errors while trying to work with other alternatives, it might be worth trying to use GCC/GDB to resolve your issue.
 #### Debugging:
 ```bash
-gcc main.c -o png-chunks-dbg -ggdb -v
+gcc main.c file_io.c png_chunk.c -o png-chunks-dbg -ggdb -v
 ```
 #### General usage:
 ```bash
-gcc main.c -o png-chunks -w
+gcc main.c file_io.c png_chunk.c -o png-chunks -w
 ```
