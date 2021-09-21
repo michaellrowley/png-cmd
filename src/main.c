@@ -14,19 +14,6 @@ void free_chunk( pchunk chnk ) {
 	}
 }
 
-typedef struct ihdr_data {
-// | <--4--> | <--4--> | <---1---> | <----1----> | <----1----> | <---1---> | <---1---> |
-// | width   | height  | bit-depth | colour-type | compression |   filter  | interlace |
-//      4    +    4    +     1     +      1      +      1      +     1     +     1     = 13 bytes.
-	int32_t width;
-	int32_t height;
-	BYTE bit_depth;
-	BYTE colour_type;
-	BYTE compression_type;
-	BYTE filter_type;
-	BYTE interlace_type;
-} ihdr_data, *pihdr_data;
-
 BOOL is_string_number( const char* string, size_t len ) {
 	for ( size_t i = 0; i < len; i++ ) {
 		if ( !isdigit( string[ i ] ) ) {
