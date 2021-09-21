@@ -34,6 +34,13 @@ typedef struct png_chunk {
 	uint32_t real_checksum; // A CRC32 calculated by png-chunks.
 } chunk, *pchunk;
 
+void free_chunk( pchunk chnk ) {
+	if ( chnk->data != nullptr ) {
+		free( chnk->data );
+		chnk->data = nullptr;
+	}
+}
+
 typedef struct ihdr_data {
 // | <--4--> | <--4--> | <---1---> | <----1----> | <----1----> | <---1---> | <---1---> |
 // | width   | height  | bit-depth | colour-type | compression |   filter  | interlace |
@@ -218,7 +225,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	unsigned int iterative_chunk_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
 		if ( iterative_chunk_index == UINT_MAX ) {
-			free( iterative_chunk.data );
+			free_chunk( &iterative_chunk );
 			return FALSE;
 		}
 
@@ -226,17 +233,19 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 			iterative_chunk.name, iterative_chunk_index,
 			(unsigned int)iterative_chunk.location.__pos,
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
+		
+		// IHDR handling (we don't assume that IHDR is the first chunk present).
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
 			iterative_chunk_index++;
-			free( iterative_chunk.data );
+			free_chunk( &iterative_chunk );
 			continue;
 		}
 		if ( !parse_ihdr( iterative_chunk.data, &ihdr ) ) {
 			printf( "Unable to parse IHDR\n" );
-			free( iterative_chunk.data );
+			free_chunk( &iterative_chunk );
 			return FALSE;
 		}
-		free( iterative_chunk.data );
+		free_chunk( &iterative_chunk );
 		iterative_chunk_index++;
 	}
 	printf( "\nFile summary:\n\tResolution: %d x %d\n\tBit-depth: %d\n\tColour-type: %d\n\n",
@@ -258,7 +267,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
 
 			chunk_iterative_index++;
-			free( iterative_chunk.data );
+			free_chunk( &iterative_chunk );
 			continue;
 		}
 
@@ -267,7 +276,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 			printf( "Unable to perform an IO operation while wiping chunk '%.4s'.\n",
 				iterative_chunk.name );
 			chunk_iterative_index++;
-			free( iterative_chunk.data );
+			free_chunk( &iterative_chunk );
 			return FALSE;
 		}
 
@@ -288,13 +297,13 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 				printf( "Unable to write at 0x%08X (chunk '%.4s').",
 					(unsigned int)( iterative_chunk.location.__pos + byte_index ),
 					iterative_chunk.name );
-				free( iterative_chunk.data );
+				free_chunk( &iterative_chunk );
 				return FALSE;
 			}
 		}
 
 		printf( "Filled '%.4s' with null bytes.\n", iterative_chunk.name );
-		free( iterative_chunk.data );
+		free_chunk( &iterative_chunk );
 		return TRUE;
 	}
 
