@@ -16,39 +16,6 @@ BOOL is_string_number( const char* string, size_t len ) {
 	return TRUE;
 }
 
-void chunk_crc32( chunk* chunk_ptr ) {
-	// Initial algorithm taken from: https://stackoverflow.com/a/21001712
-	// with minor adjustments made to fit the current context.
-	uint32_t byte, crc, mask;
-
-	if ( chunk_ptr->data == nullptr ) {
-		chunk_ptr->real_checksum = 0x0;
-		return;
-	}
-
-	crc = 0xFFFFFFFF;
-	// Name
-	for ( unsigned char i = 0; i < 4; i++ ) {
-		byte = chunk_ptr->name[i];
-		crc = crc ^ byte;
-		for (char j = 7; j >= 0; j--) {
-			mask = -(crc & 1);
-			crc = (crc >> 1) ^ (0xEDB88320 & mask);
-		}
-	}
-	// Data
-	for ( uint32_t i = 0; i < chunk_ptr->size; i++ ) {
-		byte = chunk_ptr->data[i];
-		crc = crc ^ byte;
-		for (char j = 7; j >= 0; j--) {
-			mask = -(crc & 1);
-			crc = (crc >> 1) ^ (0xEDB88320 & mask);
-		}
-	}
-	chunk_ptr->real_checksum = ~crc;
-	return;
-}
-
 BOOL read_backwards( FILE* src_handle, BYTE* buf, unsigned char len ) {
 	// Assuming that 'buf' as already been allocated to an appropriate size.
 	for ( unsigned char index = 0; index < len; index++ ) {
@@ -115,7 +82,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* buffer ) {
 	}
 
 	// Real CRC32
-	chunk_crc32( &current_chunk );
+	chunk_crc( &current_chunk );
 
 	*buffer = current_chunk;
 	return TRUE;
