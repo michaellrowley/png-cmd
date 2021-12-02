@@ -10,7 +10,7 @@ This program has two primary uses:
 ### Enumerating/listing chunks within a PNG file:
 To enumerate the chunks of a PNG file, simply execute ``./PNG_chunks sample.png`` and you should receive an output similar to this:
 ```None
-root$ ./PNG_chunks samples/firefox.png
+root$ ./png-chunks samples/firefox.png
 
 Validated PNG magic bytes.
 IHDR
@@ -48,7 +48,7 @@ Where ``IEND``, ``IDAT``, and ``IHDR`` are critical chunks of the PNG file.
 ### Deleting/erasing chunks from a PNG file:
 After enumerating the chunks within a PNG file, it becomes possible to delete them using the following command:
 ```None
-./PNG_chunks sample.png -s eXIF
+./png-chunks sample.png -s eXIF
 ```
 Where ``eXIF`` refers to an ancillary chunk enumerated previously using the chunk-listing command syntax.
 If used correctly, removing/wiping chunks should not degrade the quality/integrity of a PNG image as the erasing procedure works by leaving the chunk's structure in place but by overwriting the chunk's name/identifier, contents, and CRC32/checksum with null bytes - meaning that image parsers should be able to identify the erased chunk as a null one that needs to be skipped.
@@ -59,9 +59,13 @@ Erasing critical (fully-capitalized) chunks will result in parsing errors when t
 Compiling PNG-chunks should be pretty simple, I compiled it on Windows using WSL with [GCC](https://gcc.gnu.org/), while I was developing the program I did all of the debugging in [GDB](https://www.gnu.org/software/gdb/) so if you have any errors while trying to work with other alternatives, it might be worth trying to use GCC/GDB to resolve your issue.
 #### Debugging:
 ```bash
-gcc main.c file_io.c png_chunk.c -o png-chunks-dbg -ggdb -v
+gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-dbg -ggdb -v
+```
+#### Fuzzing (AFL):
+```bash
+afl-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-afl -ggdb -v
 ```
 #### General usage:
 ```bash
-gcc main.c file_io.c png_chunk.c -o png-chunks -w
+gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks -w
 ```
