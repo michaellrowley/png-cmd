@@ -57,7 +57,7 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 	// Real CRC32
 	chunk_crc( &current_chunk );
 
-	*buffer = current_chunk;
+	*output_buffer = current_chunk;
 	return TRUE;
 }
 
