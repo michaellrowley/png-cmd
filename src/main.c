@@ -1,32 +1,5 @@
 #include "png-chunks.h"
 
-void free_chunk( pchunk chnk ) {
-	if ( chnk->data != nullptr ) {
-		free( chnk->data );
-		chnk->data = nullptr;
-	}
-}
-
-BOOL is_string_number( const char* string, size_t len ) {
-	for ( size_t i = 0; i < len; i++ ) {
-		if ( !isdigit( string[ i ] ) ) {
-			return FALSE;
-		}
-	}
-	return TRUE;
-}
-
-BOOL read_backwards( FILE* src_handle, BYTE* buf, unsigned char len ) {
-	// Assuming that 'buf' as already been allocated to an appropriate size.
-	for ( unsigned char index = 0; index < len; index++ ) {
-		buf[ ( len - 1 ) - index ] = fgetc( src_handle );
-		if ( feof( src_handle ) ) {
-			return FALSE;
-		}
-	}
-	return TRUE;
-}
-
 BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 	ihdr_data ihdr_output = { .width = 0, .height = 0, .bit_depth = 1,
 		.colour_type = 1, .compression_type = 1, .filter_type = 1,
@@ -175,14 +148,14 @@ int main( int argc, char** argv ) {
 		
 		free( png_stat );
 		printf( "Unable to validate the filetype of file '%s'.\n", argv[1] );
-		return -1;
+		return 1;
 	}
 	free( png_stat );
 
 	const FILE* png_handle = fopen( argv[ 1 ], "r+" );
 	if ( !png_handle ) {
 		printf( "Unable to open a handle to file '%s'.\n", argv[ 1 ] );
-		return -1;
+		return 1;
 	}
 
 	// The first bytes of a PNG should be 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x1A, 0x0A
@@ -191,7 +164,7 @@ int main( int argc, char** argv ) {
 		fclose( png_handle );
 		free( magic_bytes_buffer );
 		printf( "Unable to read the first seven bytes of '%s'.\n", argv[ 1 ] );
-		return -1;
+		return 1;
 	}
 	// I'm not sure why but the last two bytes need to be reversed in order (0x0A <-> 0x1A)
 	// this shouldn't impact consistency as far as I'm aware.
@@ -200,7 +173,7 @@ int main( int argc, char** argv ) {
 		printf( "Unable to verify that the provided file ('%s') is a PNG.\n", argv[1] );
 		fclose( png_handle );
 		free( magic_bytes_buffer );
-		return -1;
+		return 1;
 	}
 	free( magic_bytes_buffer );
 	printf( "Validated PNG magic bytes.\n" );
@@ -231,12 +204,12 @@ int main( int argc, char** argv ) {
 			}
 			else {
 				printf( "Invalid amount of arguments %s.\n", operation );
-				return -1;
+				return 1;
 			}
 		}
 		else {
 			printf( "Invalid amount of arguments.\n" );
-			return -1;
+			return 1;
 		}
 	}
 
