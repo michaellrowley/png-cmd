@@ -39,6 +39,9 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 	}
 	else if ( current_chunk.size != 0 ) {
 		current_chunk.data = calloc( current_chunk.size, sizeof(BYTE) );
+		if ( current_chunk.data == nullptr ) {
+			return false;
+		}
 		for ( unsigned int i = 0; i < current_chunk.size; i++ ) {
 			current_chunk.data[ i ] = fgetc( handle );
 			if ( feof( handle ) ) {

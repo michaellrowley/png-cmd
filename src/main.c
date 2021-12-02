@@ -154,7 +154,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 		return TRUE;
 	}
 
-	printf( "Unable to locate chunk '%.4s' within the provided file.\n", iterative_chunk.name );
+	printf( "Unable to locate chunk '%.4s' within the provided file.\n", chunk_name );
 	return FALSE; // We couldn't find that chunk.
 }
 
