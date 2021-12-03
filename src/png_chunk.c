@@ -10,14 +10,15 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 	chunk current_chunk = { .size = 0, .data = nullptr, .checksum = 0x0,
 		.location = 0 };
 
-	if ( fgetpos( handle, &current_chunk.location ) != 0 ) {
+	if ( fgetpos( handle, &current_chunk.location ) != 0 ||
+		 current_chunk.size < 0 ) {
 		return FALSE;
 	}
 
 	// 00 00 00 0D | 49 48 44 52 | ?? ?? ?? ?? | 12 A0 05 5F
 	//     SIZE    |     NAME    |     DATA    |    CRC32
 	// SIZE
-	if ( !read_backwards( handle, (int*)&current_chunk.size, 4 ) ) {
+	if ( !read_backwards( handle, (int32_t*)&current_chunk.size, 4 ) ) {
 		return FALSE;
 	}
 
@@ -33,7 +34,8 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 	// DATA
 	if ( current_chunk.size > max_length && max_length != 0 ) {
 		current_chunk.data = (BYTE*)nullptr; // Ignore it.
-		if ( fseek( handle, current_chunk.size, SEEK_CUR ) != 0x0 ) {
+		if ( fseek( handle, current_chunk.size, SEEK_CUR ) != 0x00 ||
+			ferror( handle ) != 0x00 )  {
 			return FALSE;
 		}
 	}

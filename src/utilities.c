@@ -16,7 +16,7 @@ BOOL is_string_number( const char* string, size_t len ) {
 	return TRUE;
 }
 
-BOOL read_backwards( FILE* src_handle, BYTE* buf, unsigned char len ) {
+BOOL read_backwards( FILE* src_handle, BYTE* buf, uint32_t len ) {
 	// Assuming that 'buf' as already been allocated to an appropriate size.
 	for ( unsigned char index = 0; index < len; index++ ) {
 		buf[ ( len - 1 ) - index ] = fgetc( src_handle );
