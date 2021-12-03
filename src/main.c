@@ -1,6 +1,10 @@
 #include "png-chunks.h"
 
 BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
+	if ( data == nullptr || output_buffer == nullptr ) {
+		return FALSE;
+	}
+
 	ihdr_data ihdr_output = { .width = 0, .height = 0, .bit_depth = 1,
 		.colour_type = 1, .compression_type = 1, .filter_type = 1,
 		.interlace_type = 1 };
