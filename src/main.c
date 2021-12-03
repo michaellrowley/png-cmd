@@ -48,7 +48,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 	ihdr_data ihdr;
 	unsigned int iterative_chunk_index = 0;
 	while ( read_chunk( png_handle, 1000, &iterative_chunk ) ) {
-		if ( iterative_chunk_index == UINT_MAX ) {
+		if ( iterative_chunk_index == UINT_MAX - 1 ) {
 			free_chunk( &iterative_chunk );
 			return FALSE;
 		}
