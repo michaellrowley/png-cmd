@@ -12,7 +12,7 @@ During development/testing, I've been using AFL (Americal Fuzzy Lop) - a tool th
 # Compile the project
 afl-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-afl.out -ggdb -v
 # Start fuzzing
-afl-fuzz -i AFL/samples/ -o AFL/results ./png-chunks-afl.out -s eXIF @@
+afl-fuzz -i AFL/samples/ -o AFL/results ./png-chunks-afl.out @@ -s eXIF
 ```
 
 I'd recommend adjusting the launch arguments (specifically, the ``-s eXIF`` part) appropriately.
