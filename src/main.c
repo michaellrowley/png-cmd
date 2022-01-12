@@ -57,7 +57,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 			iterative_chunk.name, iterative_chunk_index,
 			(unsigned int)iterative_chunk.location.__pos,
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
-		
+
 		// IHDR handling (we don't assume that IHDR is the first chunk present).
 		if ( strncmp( iterative_chunk.name, "IHDR", 4 ) != 0 ) {
 			iterative_chunk_index++;
@@ -95,7 +95,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 			continue;
 		}
 
-		// Found the chunk!		
+		// Found the chunk!
 		if ( 0 != fseek( png_handle, iterative_chunk.location.__pos + 4, SEEK_SET ) ) {
 			printf( "Unable to perform an IO operation while wiping chunk '%.4s'.\n",
 				iterative_chunk.name );
@@ -135,6 +135,39 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 	return FALSE; // We couldn't find that chunk.
 }
 
+BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
+	chunk iterative_chunk;
+	unsigned long iterative_chunk_index = 0;
+	while ( read_chunk( file_handle, ( size_t ) -1, &iterative_chunk ) ) {
+		if ( target_chunk_index != iterative_chunk_index ) {
+			iterative_chunk_index++;
+			free_chunk( &iterative_chunk );
+			continue;
+		}
+		// We've found the chunk, now we can
+		// create an output file for it and
+		// write its bytes.
+		char file_path[ 13 ];
+		sprintf( file_path, "%.4s-%08X\x00", iterative_chunk.name, iterative_chunk.location );
+		const FILE* const output_handle = fopen( file_path, "w" );
+		if ( output_handle == nullptr ) {
+			free_chunk( &iterative_chunk );
+			return FALSE;
+		}
+		for (int32_t i = 0; i < iterative_chunk.size; i++) {
+			fputc( iterative_chunk.data[ i ], output_handle );
+			if ( ferror( output_handle ) ) {
+				free_chunk( &iterative_chunk );
+				fclose( output_handle );
+				return FALSE;
+			}
+		}
+		fclose( output_handle );
+		return TRUE;
+	}
+	return FALSE;
+}
+
 int main( int argc, char** argv ) {
 
 	if ( argc <= 1 ) {
@@ -149,7 +182,6 @@ int main( int argc, char** argv ) {
 	struct stat* png_stat = (struct stat*)calloc( 1, sizeof( struct stat ) );
 	if ( png_stat == nullptr || stat( argv[1], png_stat ) == -1 ||
 		!S_ISREG( png_stat->st_mode ) ) {
-		
 		free( png_stat );
 		printf( "Unable to validate the filetype of file '%s'.\n", argv[1] );
 		return 1;
@@ -171,7 +203,7 @@ int main( int argc, char** argv ) {
 		return 1;
 	}
 	// I'm not sure why but the last two bytes need to be reversed in order (0x0A <-> 0x1A)
-	// this shouldn't impact consistency as far as I'm aware.
+	// but it's probably something to do with endianess
 	if ( strncmp( magic_bytes_buffer, "\x89\x50\x4E\x47\x0D\x0A\x1A",
 		(long unsigned int)7 ) != 0 ) {
 		printf( "Unable to verify that the provided file ('%s') is a PNG.\n", argv[1] );
@@ -183,7 +215,7 @@ int main( int argc, char** argv ) {
 	printf( "Validated PNG magic bytes.\n" );
 
 	if ( argc == 2 ) {
-		list_ancillary_full( png_handle );		
+		list_ancillary_full( png_handle );
 	}
 	else {
 		if ( argc == 4 ) {
@@ -194,9 +226,11 @@ int main( int argc, char** argv ) {
 				 strcmp( operation, "-s" ) == 0 ) {
 				if ( is_string_number( argument, strlen( argument ) ) ) {
 					// ./program image.png --strip 0
-					long target_chunk_index = strtol( argument, ( char** )nullptr, 10 );
-					if ( target_chunk_index > INT_MAX || target_chunk_index < INT_MIN ) {
-						printf( "Chunk index unable to be casted to an int.\n" );
+					char* const parse_end = nullptr;
+					long target_chunk_index = strtol( argument, &parse_end, 10 );
+					if ( parse_end == argument ||
+						target_chunk_index > INT_MAX || target_chunk_index < INT_MIN ) {
+						printf( "Chunk index unable to be parsed.\n" );
 						return -1;
 					}
 					strip_chunk( png_handle, nullptr, (int)target_chunk_index );
@@ -204,6 +238,22 @@ int main( int argc, char** argv ) {
 				else {
 					// ./program image.png --strip IHDR
 					strip_chunk( png_handle, argv[ 3 ], -1 );
+				}
+			}
+			else if ( strcmp( operation, "--dump" ) == 0 ||
+					  strcmp( operation, "-d" ) == 0 ) {
+				// ./program image.png --dump 0
+				char* const parse_end = nullptr;
+				unsigned long chunk_index = strtoll( argument, &parse_end, 10 );
+				if ( parse_end == argument ) {
+					printf("Chunk index unable to be parsed.");
+					fclose( png_handle );
+					return 1;
+				}
+				if ( !dump_chunk( png_handle, chunk_index ) ) {
+					printf( "Unable to dump chunk." );
+					fclose( png_handle );
+					return 1;
 				}
 			}
 			else {

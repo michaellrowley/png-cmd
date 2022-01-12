@@ -54,6 +54,13 @@ Where ``eXIF`` refers to an ancillary chunk enumerated previously using the chun
 If used correctly, removing/wiping chunks should not degrade the quality/integrity of a PNG image as the erasing procedure works by leaving the chunk's structure in place but by overwriting the chunk's name/identifier, contents, and CRC32/checksum with null bytes - meaning that image parsers should be able to identify the erased chunk as a null one that needs to be skipped.
 Erasing critical (fully-capitalized) chunks will result in parsing errors when trying to load the image into an image viewer due to the nature of PNG.
 
+### Dumping the bytes of a chunk via its index
+Sometimes the bytes of a chunk are important but using a hex editor or terminal command to extract a byte range can be [tedious](https://stackoverflow.com/a/40792605/) at times - using the ``--dump``/``-d`` parameters, it is possible to write the contents of a PNG chunk to a file by simply passing its index as an argument.
+```None
+./png-chunks sample.png -d 0
+```
+Where ``0`` refers to the 0ᵗʰ chunk within the PNG file - the output can be found at ``CHNK-00000012`` where ``00000012`` is the hex-formatted offset of the chunk (as can be observed in the 'Location' section of an enumeration) and ``CHNK`` is the chunk's four-character title (e.g '``IHDR``'.)
+
 ## Building:
 Compiling PNG-chunks should be pretty simple, I compiled it on Windows using WSL with [GCC](https://gcc.gnu.org/), while I was developing the program I did all of the debugging in [GDB](https://www.gnu.org/software/gdb/) so if you have any errors while trying to work with other alternatives, it might be worth trying to use GCC/GDB to resolve your issue.
 
