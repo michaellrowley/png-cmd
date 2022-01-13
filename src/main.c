@@ -138,7 +138,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
 	chunk iterative_chunk;
 	unsigned long iterative_chunk_index = 0;
-	while ( read_chunk( file_handle, ( size_t ) -1, &iterative_chunk ) ) {
+	while ( read_chunk( file_handle, ( size_t ) 65535, &iterative_chunk ) ) {
 		if ( target_chunk_index != iterative_chunk_index ) {
 			iterative_chunk_index++;
 			free_chunk( &iterative_chunk );
@@ -162,9 +162,11 @@ BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
 				return FALSE;
 			}
 		}
+		free_chunk( &iterative_chunk );
 		fclose( output_handle );
 		return TRUE;
 	}
+	free_chunk( &iterative_chunk );
 	return FALSE;
 }
 
