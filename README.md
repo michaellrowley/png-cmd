@@ -59,10 +59,10 @@ Sometimes the bytes of a chunk are important but using a hex editor or terminal 
 ```None
 ./png-chunks sample.png -d 0
 ```
-Where ``0`` refers to the 0ᵗʰ chunk within the PNG file - the output can be found at ``CHNK-00000012`` where ``00000012`` is the hex-formatted offset of the chunk (as can be observed in the 'Location' section of an enumeration) and ``CHNK`` is the chunk's four-character title (e.g '``IHDR``'.)
+Where ``0`` refers to the 0ᵗʰ chunk within the PNG file - the output can be found at ``CHNK-00000012`` where ``00000012`` is the hex-formatted offset of the chunk (as can be observed in the 'Location' section of an enumeration).
 
 ## Building:
-Compiling PNG-chunks should be pretty simple, I compiled it on Windows using WSL with [GCC](https://gcc.gnu.org/), while I was developing the program I did all of the debugging in [GDB](https://www.gnu.org/software/gdb/) so if you have any errors while trying to work with other alternatives, it might be worth trying to use GCC/GDB to resolve your issue.
+Compiling PNG-chunks should be pretty simple, I compiled it on Windows using WSL with [GCC](https://gcc.gnu.org/), while I was developing the program I did all of the debugging in [GDB](https://www.gnu.org/software/gdb/) so if you have any errors while trying to work with other alternatives, it might be worth trying to use GCC/GDB to resolve your issue. A known issue is that this program won't compile under the MacOS GCC that is included with XCode (tested on OSX Monterey 12.1 in a VMWare virtual machine).
 
 If you'd like to compile/build this project for fuzzing, see the [SECURITY.MD](https://github.com/michaellrowley/png-chunks/blob/main/SECURITY.md) document which details how to compile it with ``afl-gcc`` and launch an AFL session using ``afl-fuzz``.
 
