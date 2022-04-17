@@ -8,39 +8,30 @@ In ``/samples/`` there are a few PNG files that you can use for testing chunk ex
 ## Usage
 This program has two primary uses:
 ### Enumerating/listing chunks within a PNG file
-To enumerate the chunks of a PNG file, simply execute ``./PNG_chunks sample.png`` and you should receive an output similar to this:
+To enumerate the chunks of a PNG file, simply execute ``./png-chunks.out samples/wikipedia.png`` and you should receive an output similar to this:
 ```None
-root$ ./png-chunks samples/firefox.png
+user$ ./png-chunks.out samples/wikipedia.png
 
 Validated PNG magic bytes.
 IHDR
 |0|
- |
- |--- Location: 0x00000008
- |--- Size: 0x0000000D
- |--- CRC32: 0x000001E2
- |--- Real CRC32: 0xFFFFFFFF
+ |--- Location: 0x8
+ |--- Size: 0xD
+ |--- CRC32: 0x373EFFB4
 
-IDAT
-|1|
- |
- |--- Location: 0x00000021
- |--- Size: 0x000631E5
- |--- CRC32: 0x00000135
- |--- Real CRC32: 0xFFFFFFFF
+... * omitted to save space *
 
 IEND
-|2|
- |
- |--- Location: 0x00063212
- |--- Size: 0x00000000
- |--- CRC32: 0x000001D2
- |--- Real CRC32: 0xFFFFFFFF
+|4|
+ |--- Location: 0x5B082
+ |--- Size: 0x0
+ |--- CRC32: 0xAE426082
+
 
 File summary:
-  Resolution: 2001 x 2066
-  Bit-depth: 8
-  Colour-type: 0
+	Resolution: 2400 x 2189
+	Bit-depth: 8
+	Colour-type: 0
 ```
 
 Where ``IEND``, ``IDAT``, and ``IHDR`` are critical chunks of the PNG file.
