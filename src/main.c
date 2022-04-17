@@ -104,7 +104,7 @@ int main( int argc, char** argv ) {
 	}
 
 	// The first bytes of a PNG should be 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x1A, 0x0A
-	BYTE* magic_bytes_buffer = (BYTE*)malloc( sizeof(BYTE) * ( 7 + 1 ) );
+	BYTE* magic_bytes_buffer = (BYTE*)malloc( 8 );
 	if ( !read_bytes( png_handle, 8, magic_bytes_buffer ) ) {
 		fclose( png_handle );
 		free( magic_bytes_buffer );

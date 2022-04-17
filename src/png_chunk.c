@@ -14,13 +14,13 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 		return FALSE;
 	}
 
-	// 00 00 00 0D | 49 48 44 52 | ?? ?? ?? ?? | 12 A0 05 5F
+	// 00 00 00 0D | 49 48 44 52 | FA .. .. 9B | 12 A0 05 5F
 	//     SIZE    |     NAME    |     DATA    |    CRC32
 	// SIZE
-	if ( !read_backwards( handle, (int32_t*)&current_chunk.size, 4 ) ||
-		 current_chunk.size < 0 ) {
+	if ( !read_bytes( handle, 4, (uint32_t*)&current_chunk.size ) ) {
 		return FALSE;
 	}
+	INT32_FLIP(current_chunk.size);
 
 	// NAME
 	// current_chunk.name = (char*)calloc( 4 + 1, sizeof( char ) );
@@ -54,10 +54,11 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 	}
 
 	// CRC32
-	if ( !read_backwards( handle, (BYTE*)&current_chunk.checksum, 4 ) ) {
+	if ( !read_bytes( handle, 4, (BYTE*)&current_chunk.checksum ) ) {
 		free( current_chunk.data );
 		return FALSE;
 	}
+	INT32_FLIP(current_chunk.checksum);
 
 	*output_buffer = current_chunk;
 	return TRUE;
@@ -144,7 +145,7 @@ BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
 			free_chunk( &iterative_chunk );
 			return FALSE;
 		}
-		for (int32_t i = 0; i < iterative_chunk.size; i++) {
+		for (uint32_t i = 0; i < iterative_chunk.size; i++) {
 			fputc( iterative_chunk.data[ i ], output_handle );
 			if ( ferror( output_handle ) ) {
 				free_chunk( &iterative_chunk );
