@@ -55,7 +55,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 
 		printf( "%s\n|%u|\n |\n |--- Location: 0x%X\n |--- Size: 0x%X\n |--- CRC32: 0x%X\n |--- Real CRC32: 0x%X\n\n",
 			iterative_chunk.name, iterative_chunk_index,
-			(unsigned int)iterative_chunk.location.__pos,
+			(unsigned int)FPOS_GETVAL( iterative_chunk.location ),
 			iterative_chunk.size, iterative_chunk.checksum, iterative_chunk.real_checksum );
 
 		// IHDR handling (we don't assume that IHDR is the first chunk present).
@@ -96,7 +96,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 		}
 
 		// Found the chunk!
-		if ( 0 != fseek( png_handle, iterative_chunk.location.__pos + 4, SEEK_SET ) ) {
+		if ( 0 != fseek( png_handle, FPOS_GETVAL( iterative_chunk.location ) + 4, SEEK_SET ) ) {
 			printf( "Unable to perform an IO operation while wiping chunk '%.4s'.\n",
 				iterative_chunk.name );
 			chunk_iterative_index++;
@@ -119,7 +119,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 			}
 			if ( feof( png_handle ) ) {
 				printf( "Unable to write at 0x%08X (chunk '%.4s').",
-					(unsigned int)( iterative_chunk.location.__pos + byte_index ),
+					(unsigned int)( FPOS_GETVAL( iterative_chunk.location ) + byte_index ),
 					iterative_chunk.name );
 				free_chunk( &iterative_chunk );
 				return FALSE;

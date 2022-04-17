@@ -12,6 +12,11 @@
 #define FALSE false
 #define nullptr 0x0
 #define NULL 0
+#ifndef __APPLE__
+#define FPOS_GETVAL(val) (val.__pos)
+#else
+#define FPOS_GETVAL(val) (val)
+#endif
 
 typedef struct png_chunk {
 	fpos_t location; // Offset in file.
