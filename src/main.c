@@ -80,6 +80,9 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_index ) {
 	chunk iterative_chunk;
 	unsigned int chunk_iterative_index = 0;
+	if (chunk_name == nullptr) {
+		return false;
+	}
 	while ( read_chunk( png_handle, 0, &iterative_chunk ) ) {
 		if ( chunk_iterative_index == UINT_MAX ) {
 			free( iterative_chunk.data );
@@ -147,8 +150,9 @@ BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
 		// We've found the chunk, now we can
 		// create an output file for it and
 		// write its bytes.
-		char file_path[ 13 ];
-		sprintf( file_path, "%.4s-%08X\x00", iterative_chunk.name, iterative_chunk.location );
+		char file_path[ 14 ];
+		
+		snprintf( file_path, 14, "%.4s-%08X\x00", iterative_chunk.name, iterative_chunk.location );
 		const FILE* const output_handle = fopen( file_path, "w" );
 		if ( output_handle == nullptr ) {
 			free_chunk( &iterative_chunk );

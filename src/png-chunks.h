@@ -28,7 +28,7 @@ typedef struct png_chunk {
 
 typedef struct ihdr_data {
 // | <--4--> | <--4--> | <---1---> | <----1----> | <----1----> | <---1---> | <---1---> |
-// | width   | height  | bit-depth | colour-type | compression |   filter  | interlace |
+// |  width  | height  | bit-depth | colour-type | compression |   filter  | interlace |
 //      4    +    4    +     1     +      1      +      1      +     1     +     1     = 13 bytes.
 	int32_t width;
 	int32_t height;
