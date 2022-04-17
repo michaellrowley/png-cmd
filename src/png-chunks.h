@@ -39,6 +39,12 @@ typedef struct ihdr_data {
 	BYTE interlace_type;
 } ihdr_data, *pihdr_data;
 
+// png_chunk.c
 BOOL read_chunk( FILE* file_handle, size_t max_length,
-	chunk* output_buffer ); // png_chunk.c
-BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer ); // file_io.c
+	chunk* output_buffer );
+BOOL strip_chunk( FILE* png_handle, const char* chunk_name,
+	const int chunk_index );
+BOOL dump_chunk( FILE* file_handle,
+	unsigned long target_chunk_index );
+// file_io.c
+BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer );

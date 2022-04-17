@@ -62,3 +62,100 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 	*output_buffer = current_chunk;
 	return TRUE;
 }
+
+BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_index ) {
+	chunk iterative_chunk;
+	unsigned int chunk_iterative_index = 0;
+	if (chunk_name == nullptr) {
+		return false;
+	}
+	while ( read_chunk( png_handle, 0, &iterative_chunk ) ) {
+		if ( chunk_iterative_index == UINT_MAX ) {
+			free( iterative_chunk.data );
+			return FALSE;
+		}
+
+		if ( ( chunk_name != nullptr && strncmp( iterative_chunk.name,
+				chunk_name, 4 ) != 0 ) ||
+			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
+
+			chunk_iterative_index++;
+			free_chunk( &iterative_chunk );
+			continue;
+		}
+
+		// Found the chunk!
+		if ( 0 != fseek( png_handle, FPOS_GETVAL( iterative_chunk.location ) + 4, SEEK_SET ) ) {
+			printf( "Unable to perform an IO operation while wiping chunk '%.4s'.\n",
+				iterative_chunk.name );
+			chunk_iterative_index++;
+			free_chunk( &iterative_chunk );
+			return FALSE;
+		}
+
+		// Adding eight to iterative_chunk.size allows us to
+		// overwrite the CRC32 which could provide information
+		// to anyone that needs to narrow down the possible
+		// value(s) of the chunk we are wiping.
+		// That only accounts for four bytes though (CRC32 =
+		// four byte integer in PNG) - the other four bytes
+		// are the chunk's identifier (four 1-byte characters)
+		// so that anyone analyzing the PNG also can't tell
+		// what chunk was previously there.
+		for ( unsigned short byte_index = 0; byte_index < iterative_chunk.size + 8; byte_index++ ) {
+			if ( 0 != fputc( (char)0x0, png_handle ) ) {
+				printf( "Unable to write to chunk '%.4s'.\n", iterative_chunk.name );
+			}
+			if ( feof( png_handle ) ) {
+				printf( "Unable to write at 0x%08X (chunk '%.4s').",
+					(unsigned int)( FPOS_GETVAL( iterative_chunk.location ) + byte_index ),
+					iterative_chunk.name );
+				free_chunk( &iterative_chunk );
+				return FALSE;
+			}
+		}
+
+		printf( "Filled '%.4s' with null bytes.\n", iterative_chunk.name );
+		free_chunk( &iterative_chunk );
+		return TRUE;
+	}
+
+	printf( "Unable to locate chunk '%.4s' within the provided file.\n", chunk_name );
+	return FALSE; // We couldn't find that chunk.
+}
+
+BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
+	chunk iterative_chunk;
+	unsigned long iterative_chunk_index = 0;
+	while ( read_chunk( file_handle, ( size_t ) 65535, &iterative_chunk ) ) {
+		if ( target_chunk_index != iterative_chunk_index ) {
+			iterative_chunk_index++;
+			free_chunk( &iterative_chunk );
+			continue;
+		}
+		// We've found the chunk, now we can
+		// create an output file for it and
+		// write its bytes.
+		char file_path[ 14 ];
+		
+		snprintf( file_path, 14, "%.4s-%08X\x00", iterative_chunk.name, iterative_chunk.location );
+		const FILE* const output_handle = fopen( file_path, "w" );
+		if ( output_handle == nullptr ) {
+			free_chunk( &iterative_chunk );
+			return FALSE;
+		}
+		for (int32_t i = 0; i < iterative_chunk.size; i++) {
+			fputc( iterative_chunk.data[ i ], output_handle );
+			if ( ferror( output_handle ) ) {
+				free_chunk( &iterative_chunk );
+				fclose( output_handle );
+				return FALSE;
+			}
+		}
+		free_chunk( &iterative_chunk );
+		fclose( output_handle );
+		return TRUE;
+	}
+	free_chunk( &iterative_chunk );
+	return FALSE;
+}
