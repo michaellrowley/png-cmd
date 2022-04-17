@@ -29,15 +29,15 @@ BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 
 	// 1b + [10b] = [11b]
 	// Compression-type:
-	ihdr_output.colour_type = data[ 10 ];
+	ihdr_output.compression_type = data[ 10 ];
 
 	// 1b + [11b] = [12b]
 	// Filter-type:
-	ihdr_output.colour_type = data[ 11 ];
+	ihdr_output.filter_type = data[ 11 ];
 
 	// 1b + [12b] = [13b] -> TOTAL
 	// Interlace-type:
-	ihdr_output.colour_type = data[ 12 ];
+	ihdr_output.interlace_type = data[ 12 ];
 
 	*output_buffer = ihdr_output;
 	return TRUE;
