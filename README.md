@@ -1,4 +1,4 @@
-![Issues](https://img.shields.io/github/issues/michaellrowley/png-chunks) ![Forks](https://img.shields.io/github/forks/michaellrowley/png-chunks) ![Stars](https://img.shields.io/github/stars/michaellrowley/png-chunks) ![License](https://img.shields.io/github/license/michaellrowley/png-chunks) ![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmichaellrowley%2Fpng-chunks)
+![Issues](https://img.shields.io/github/issues/michaellrowley/png-chunks) ![Codacy Badge](https://app.codacy.com/project/badge/Grade/ceb6a531a53b4e6b92cae63f99c6b543) ![License](https://img.shields.io/github/license/michaellrowley/png-chunks) ![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmichaellrowley%2Fpng-chunks)
 
 # PNG-Chunks
 
