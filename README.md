@@ -2,6 +2,8 @@
 
 # PNG-Chunks
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/086e94607be44ef9a381b4576bf51728)](https://app.codacy.com/gh/michaellrowley/png-chunks?utm_source=github.com&utm_medium=referral&utm_content=michaellrowley/png-chunks&utm_campaign=Badge_Grade_Settings)
+
 This is a small ( ~400 lines ) tool I have written to help me learn about
 [the file structure of PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics)
 by using sample files and enumerating their chunks.
