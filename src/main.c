@@ -53,7 +53,7 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 			return FALSE;
 		}
 
-		printf( "%s\n|%u|\n |--- Location: 0x%X\n |--- Size: 0x%X\n |--- CRC32: 0x%X\n\n",
+		printf( "%s\n|%u|\n |--- Location:\t0x%X\n |--- Size:\t0x%X\n |--- CRC32:\t0x%X\n\n",
 			iterative_chunk.name, iterative_chunk_index,
 			(unsigned int)FPOS_GETVAL( iterative_chunk.location ),
 			iterative_chunk.size, iterative_chunk.checksum );
