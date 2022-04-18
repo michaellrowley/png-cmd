@@ -67,18 +67,19 @@ BOOL read_chunk( FILE* handle, size_t max_length, chunk* output_buffer ) {
 BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_index ) {
 	chunk iterative_chunk;
 	unsigned int chunk_iterative_index = 0;
-	if (chunk_name == nullptr) {
+	if (chunk_name == nullptr && chunk_index == -1) {
 		return false;
 	}
+
 	while ( read_chunk( png_handle, 0, &iterative_chunk ) ) {
+		chunk_iterative_index++;
 		if ( chunk_iterative_index == UINT_MAX ) {
 			free( iterative_chunk.data );
 			return FALSE;
 		}
-
 		if ( ( chunk_name != nullptr && strncmp( iterative_chunk.name,
 				chunk_name, 4 ) != 0 ) ||
-			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
+			 ( chunk_index != -1 && chunk_iterative_index != chunk_index + 1 ) ) {
 			free_chunk( &iterative_chunk );
 			continue;
 		}
@@ -100,7 +101,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 		// are the chunk's identifier (four 1-byte characters)
 		// so that anyone analyzing the PNG also can't tell
 		// what chunk was previously there.
-		for ( unsigned short byte_index = 0; byte_index < iterative_chunk.size + 8; byte_index++ ) {
+		for ( uint32_t byte_index = 0; byte_index < iterative_chunk.size + 8; byte_index++ ) {
 			if ( 0 != fputc( (char)0x0, png_handle ) ) {
 				printf( "Unable to write to chunk '%.4s'.\n", iterative_chunk.name );
 			}
@@ -111,6 +112,8 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 				free_chunk( &iterative_chunk );
 				return FALSE;
 			}
+			// TODO: Logging so that we know the program isn't
+			// frozen on larger chunks.
 		}
 
 		printf( "Filled '%.4s' with null bytes.\n", iterative_chunk.name );
@@ -118,7 +121,7 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 		return TRUE;
 	}
 
-	printf( "Unable to locate chunk '%.4s' within the provided file.\n", chunk_name );
+	printf( "Unable to locate chunk within the provided file.\n" );
 	return FALSE; // We couldn't find that chunk.
 }
 
