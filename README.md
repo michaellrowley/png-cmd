@@ -14,7 +14,7 @@ In ``/samples/`` there are a few PNG files that you can use for testing chunk ex
 
 ## Usage
 
-This program has two primary uses:
+This program has three primary uses:
 
 ### Enumerating/listing chunks within a PNG file
 
