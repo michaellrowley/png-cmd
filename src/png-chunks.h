@@ -54,3 +54,6 @@ BOOL dump_chunk( FILE* file_handle,
 
 // file_io.c
 BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer );
+
+// main.c
+uint8_t get_number_length( int64_t number );

@@ -1,3 +1,4 @@
+
 # Security Policy
 
 ## Reporting a Vulnerability
@@ -12,16 +13,19 @@ as possible regardless of how likely they are to be feasible from a
 practical perspective however some issues are acknowledged and their
 impact accepted as a cost of using the program, therefore the following
 assumptions are made:
-- The files being submitted are secure from malicious content.
-- The path being supplied (and all accompanying arguments) are benign in nature.
-- This program is not run as sudo/root/administrator or with any unnecessary privileges.
+
+-  The files being submitted are secure from malicious content.
+
+-  The path being supplied (and all accompanying arguments) are benign in nature.
+
+-  This program is not run as sudo/root/administrator or with any unnecessary privileges.
 
 ## Fuzzing this project
 
 During development, AFL (Americal Fuzzy Lop) was used; a tool that was
 developed by Google and is now open-source - if you'd like
-to fuzz this project using AFL; there is a directory (``/AFL/``) that contains
-samples that can be used as a base for fuzzing (these can be found
+to fuzz this project using AFL there is a directory (``/AFL/``) that contains
+samples to be used as a base for fuzzing (these can be found
 under ``/AFL/samples``) and an empty output directory (``/AFL/results``).
 
 ```bash

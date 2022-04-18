@@ -88,14 +88,17 @@ int main( int argc, char** argv ) {
 		return -1;
 	}
 
+	// Check that the provided file is a 'regular' file
+	// (not a symbolic link, directory, device, or something
+	// else).
 	struct stat* png_stat = (struct stat*)calloc( 1, sizeof( struct stat ) );
-	if ( png_stat == nullptr || stat( argv[1], png_stat ) == -1 ||
+	if ( png_stat == nullptr || stat( argv[ 1 ], png_stat ) == -1 ||
 		!S_ISREG( png_stat->st_mode ) ) {
 		free( png_stat );
 		printf( "Unable to validate the filetype of file '%s'.\n", argv[1] );
 		return 1;
 	}
-	free( png_stat );
+	free( png_stat ); // Only needed png_stat to check file-type.
 
 	const FILE* png_handle = fopen( argv[ 1 ], "r+" );
 	if ( !png_handle ) {
@@ -133,7 +136,8 @@ int main( int argc, char** argv ) {
 
 			if ( strcmp( operation, "--strip" ) == 0 ||
 				 strcmp( operation, "-s" ) == 0 ) {
-				if ( is_string_number( argument, strlen( argument ) ) ) {
+				if ( is_string_number( argument, strnlen( argument,
+					 get_number_length( LONG_MAX ) ) ) ) {
 					// ./program image.png --strip 0
 					char* const parse_end = nullptr;
 					long target_chunk_index = strtol( argument, &parse_end, 10 );

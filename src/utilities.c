@@ -16,6 +16,9 @@ BOOL is_string_number( const char* string, size_t len ) {
 	return TRUE;
 }
 
+// Assuming that the caller has already validated that the
+// buffer is large enough to facilitate this and also that
+// the file in question is long enough to read this many bytes.
 BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer ) {
 	if ( buffer == nullptr || len == 0 ) {
 		return FALSE;
@@ -28,4 +31,11 @@ BOOL read_bytes( FILE* file_handle, size_t len, BYTE* buffer ) {
 		buffer[ i ] = iterative_byte;
 	}
 	return TRUE;
+}
+
+uint8_t get_number_length( int64_t number ) {
+    uint8_t length;
+    for ( length = number < 0 ? 2 : 1; number != 0 && length != 255;
+		number /= 10, length++ ) { }
+	return length;
 }

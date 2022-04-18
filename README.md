@@ -1,16 +1,14 @@
+
+# PNG-Chunks
+
 ![Issues](https://img.shields.io/github/issues/michaellrowley/png-chunks)
 ![Codacy Badge](https://app.codacy.com/project/badge/Grade/ceb6a531a53b4e6b92cae63f99c6b543)
 ![License](https://img.shields.io/github/license/michaellrowley/png-chunks)
 ![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmichaellrowley%2Fpng-chunks)
 
-
-# PNG-Chunks
-
-This is a small ( ~400 lines ) tool I have written to help me learn about
+This is a small tool that was developed to help me learn about
 [the file structure of PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics)
 by using sample files and enumerating their chunks.
-
-In ``/samples/`` there are a few PNG files that you can use for testing chunk extraction!
 
 ## Usage
 
@@ -65,7 +63,7 @@ works by leaving the chunk's structure in place but by overwriting the chunk's
 name/identifier, contents, and CRC32/checksum with null bytes - meaning that
 image parsers should be able to identify the erased chunk as a null one that
 needs to be skipped. Erasing ancillary chunks will result in parsing errors
-when trying to load the image into an image viewer due to the nature of PNG.
+when trying to load the image into an image viewer due to the way that the PNG specification relies upon ancillary chunks.
 
 ### Dumping the bytes of a chunk via its index
 
@@ -108,8 +106,8 @@ gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-dbg.out -ggdb -v
 
 ### General usage
 
+From within the root repository directory:
+
 ```bash
-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks.out -w -Ofast
-# OR (same command is executed)
-./build.sh
+./build.sh # gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks.out -w -Ofast
 ```
