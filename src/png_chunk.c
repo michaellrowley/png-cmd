@@ -79,8 +79,6 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 		if ( ( chunk_name != nullptr && strncmp( iterative_chunk.name,
 				chunk_name, 4 ) != 0 ) ||
 			 ( chunk_index != -1 && chunk_iterative_index != chunk_index ) ) {
-
-			chunk_iterative_index++;
 			free_chunk( &iterative_chunk );
 			continue;
 		}
@@ -89,7 +87,6 @@ BOOL strip_chunk( FILE* png_handle, const char* chunk_name, const int chunk_inde
 		if ( 0 != fseek( png_handle, FPOS_GETVAL( iterative_chunk.location ) + 4, SEEK_SET ) ) {
 			printf( "Unable to perform an IO operation while wiping chunk '%.4s'.\n",
 				iterative_chunk.name );
-			chunk_iterative_index++;
 			free_chunk( &iterative_chunk );
 			return FALSE;
 		}

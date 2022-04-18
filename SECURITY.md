@@ -2,26 +2,34 @@
 
 ## Reporting a Vulnerability
 
-There aren't many attack vectors for this project aside from malicious
-images but if you find a security vulnerability with png-chunks, please
-[send me an email](mailto:michaellrowley@protonmail.com) or open an issue
-(both contact methods should have similar patch times) so that I can get the
-issue patched/fixed as soon as possible.
+Security-related vulnerabilities can be reported via an
+[email](mailto:michaellrowley@protonmail.com) or an issue can be opened
+so that I can get the issue patched as soon as possible.
+
+Whilst I think that the number of attack vectors for this project is
+limited, I'd like to have any potential vulnerabilities fixed as soon
+as possible regardless of how likely they are to be feasible from a
+practical perspective however some issues are acknowledged and their
+impact accepted as a cost of using the program, therefore the following
+assumptions are made:
+- The files being submitted are secure from malicious content.
+- The path being supplied (and all accompanying arguments) are benign in nature.
+- This program is not run as sudo/root/administrator or with any unnecessary privileges.
 
 ## Fuzzing this project
 
-During development/testing, I've been using AFL (Americal Fuzzy Lop) - a tool
-that was originally developed by Google and is now open-source - if you'd like
-to fuzz this project using AFL; there is a directory (``/AFL/``) that has a
-couple of small (95B and 8.71KB) samples that can be used (these can be found
+During development, AFL (Americal Fuzzy Lop) was used; a tool that was
+developed by Google and is now open-source - if you'd like
+to fuzz this project using AFL; there is a directory (``/AFL/``) that contains
+samples that can be used as a base for fuzzing (these can be found
 under ``/AFL/samples``) and an empty output directory (``/AFL/results``).
 
 ```bash
 # Compile the project
-afl-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-afl.out -ggdb -v
+afl-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-afl.out -ggdb
+
 # Start fuzzing
 afl-fuzz -i AFL/samples/ -o AFL/results ./png-chunks-afl.out @@ -s eXIF
 ```
 
-I'd recommend adjusting the launch arguments (specifically, the ``-s eXIF``
-part) appropriately.
+Fuzzing has not been thoroughly tested on MacOS but it does work on Ubuntu (stable).
