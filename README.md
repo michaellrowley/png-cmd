@@ -12,7 +12,7 @@ by using sample files and enumerating their chunks.
 
 ## Usage
 
-This program has two primary uses:
+This program has three primary uses:
 
 ### Enumerating/listing chunks within a PNG file
 
