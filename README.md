@@ -17,35 +17,34 @@ This program has three primary uses:
 ### Enumerating/listing chunks within a PNG file
 
 To enumerate the chunks of a PNG file, simply execute
-``./png-chunks.out samples/wikipedia.png`` and you should receive an output
+``./png-chunks samples/wikipedia.png`` and you should receive an output
 similar to this:
 
-```None
-user$ ./png-chunks.out samples/wikipedia.png
-
-Validated PNG magic bytes.
+```
 IHDR
 |0|
  |--- Location: 0x8
  |--- Size: 0xD
- |--- CRC32: 0x373EFFB4
+ |--- CRC32: 0xDF926011
 
-... * omitted to save space *
+IDAT
+|1|
+ |--- Location: 0x21
+ |--- Size: 0x631E5
+ |--- CRC32: 0x42038A66
 
 IEND
-|4|
- |--- Location: 0x5B082
+|2|
+ |--- Location: 0x63212
  |--- Size: 0x0
  |--- CRC32: 0xAE426082
 
 
 File summary:
-    Resolution: 2400 x 2189
-    Bit-depth: 8
-    Colour-type: 0
+	Resolution: 2001 x 2066
+	Bit-depth: 8
+	Colour-type: 6 - RGBA
 ```
-
-Where ``IEND``, ``IDAT``, and ``IHDR`` are critical chunks of the PNG file.
 
 ### Deleting/erasing chunks from a PNG file
 

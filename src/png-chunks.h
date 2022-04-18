@@ -44,6 +44,16 @@ typedef struct ihdr_data {
 	BYTE interlace_type;
 } ihdr_data, *pihdr_data;
 
+static const char colour_type_descriptions[7][20] = {
+	"Grayscale",
+	"Invalid",
+	"RGB",
+	"Custom Palette",
+	"Grayscale & Alpha",
+	"Invalid",
+	"RGBA"
+};
+
 // png_chunk.c
 BOOL read_chunk( FILE* file_handle, size_t max_length,
 	chunk* output_buffer );

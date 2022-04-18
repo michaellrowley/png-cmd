@@ -72,8 +72,9 @@ BOOL list_ancillary_full( FILE* png_handle ) {
 		free_chunk( &iterative_chunk );
 		iterative_chunk_index++;
 	}
-	printf( "\nFile summary:\n\tResolution: %d x %d\n\tBit-depth: %d\n\tColour-type: %d\n\n",
-		ihdr.width, ihdr.height, ihdr.bit_depth, ihdr.colour_type );
+	printf( "\nFile summary:\n\tResolution:\t%d x %d\n\tBit-depth:\t%d\n\tColour-type:\t%d - %s\n\n",
+		ihdr.width, ihdr.height, ihdr.bit_depth, ihdr.colour_type, (ihdr.colour_type > 6 ) ? "Invalid"
+		: colour_type_descriptions[ihdr.colour_type] );
 	return TRUE;
 }
 

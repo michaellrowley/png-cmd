@@ -134,6 +134,7 @@ BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
 			free_chunk( &iterative_chunk );
 			continue;
 		}
+		
 		// We've found the chunk, now we can
 		// create an output file for it and
 		// write its bytes.
