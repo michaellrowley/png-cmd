@@ -1,4 +1,4 @@
-#include "png-chunks.h"
+#include "png-cmd.h"
 
 void free_chunk( pchunk chnk ) {
 	if ( chnk->data != nullptr ) {

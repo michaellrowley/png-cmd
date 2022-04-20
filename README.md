@@ -1,23 +1,21 @@
 
-# PNG-Chunks
+![x](banner.svg)
 
 ![Issues](https://img.shields.io/github/issues/michaellrowley/png-chunks)
 ![Codacy Badge](https://app.codacy.com/project/badge/Grade/ceb6a531a53b4e6b92cae63f99c6b543)
 ![License](https://img.shields.io/github/license/michaellrowley/png-chunks)
 ![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmichaellrowley%2Fpng-chunks)
 
-This is a small tool that was developed to help me learn about
-[the file structure of PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics)
-by using sample files and enumerating their chunks.
+A small tool utility to help users manage
+[PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics)
+by inspecting/modifying individual chunks.
 
 ## Usage
-
-This program has three primary uses:
 
 ### Enumerating/listing chunks within a PNG file
 
 To enumerate the chunks of a PNG file, simply execute
-``./png-chunks samples/wikipedia.png`` and you should receive an output
+``./png-cmd samples/wikipedia.png`` and you should receive an output
 similar to this:
 
 ```
@@ -52,7 +50,7 @@ After enumerating the chunks within a PNG file, it becomes possible to delete
 them using the following command:
 
 ```None
-./png-chunks sample.png -s eXIF
+./png-cmd sample.png -s eXIF
 ```
 
 Where ``eXIF`` refers to an ancillary chunk enumerated previously using the
@@ -62,7 +60,7 @@ works by leaving the chunk's structure in place but by overwriting the chunk's
 name/identifier, contents, and CRC32/checksum with null bytes - meaning that
 image parsers should be able to identify the erased chunk as a null one that
 needs to be skipped. Erasing ancillary chunks will result in parsing errors
-when trying to load the image into an image viewer due to the way that the PNG specification relies upon ancillary chunks.
+when trying to load the image into standard image viewers.
 
 ### Dumping the bytes of a chunk via its index
 
@@ -73,7 +71,7 @@ terminal command to extract a byte range can be
 a PNG chunk to a file by simply passing its index as an argument.
 
 ```None
-./png-chunks sample.png -d 0
+./png-cmd sample.png -d 0
 ```
 
 Where ``0`` refers to the 0ᵗʰ chunk within the PNG file - the output
@@ -100,7 +98,7 @@ AFL session using ``afl-fuzz``.
 ### Debugging
 
 ```bash
-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-dbg.out -ggdb -v
+gcc src/main.c src/utilities.c src/png_chunk.c -o png-cmd-dbg -ggdb -v
 ```
 
 ### General usage
@@ -108,5 +106,5 @@ gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-dbg.out -ggdb -v
 From within the root repository directory:
 
 ```bash
-./build.sh # gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks.out -w -Ofast
+./build.sh # gcc src/main.c src/utilities.c src/png_chunk.c -o png-cmd -w -Ofast
 ```
