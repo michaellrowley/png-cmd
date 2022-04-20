@@ -140,7 +140,7 @@ BOOL dump_chunk( FILE* file_handle, unsigned long target_chunk_index ) {
 		// write its bytes.
 		char file_path[ 14 ];
 		
-		snprintf( file_path, 14, "%.4s-%08X\x00", iterative_chunk.name, iterative_chunk.location );
+		snprintf( file_path, 14, "%.4s-%64X\x00", iterative_chunk.name, FPOS_GETVAL(iterative_chunk.location) );
 		const FILE* const output_handle = fopen( file_path, "w" );
 		if ( output_handle == nullptr ) {
 			free_chunk( &iterative_chunk );
