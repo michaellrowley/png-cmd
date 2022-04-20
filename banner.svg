@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 400 150" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<vectornator:setting key="IsTimeLapseWatermarkDisabled" value="false"/>
+<vectornator:setting key="UndoHistoryDisabled" value="true"/>
+<vectornator:setting key="VNDimensionsVisible" value="true"/>
+<vectornator:setting key="VNSnapToGuides" value="true"/>
+<vectornator:setting key="WDCMYKEnabledKey" value="false"/>
+<vectornator:setting key="WDDisplayWhiteBackground" value="false"/>
+<vectornator:setting key="WDDynamicGuides" value="false"/>
+<vectornator:setting key="WDGuidesVisible" value="true"/>
+<vectornator:setting key="WDIsolateActiveLayer" value="false"/>
+<vectornator:setting key="WDOutlineMode" value="false"/>
+<vectornator:setting key="WDRulersVisible" value="true"/>
+<vectornator:setting key="WDSnapToEdges" value="false"/>
+<vectornator:setting key="WDSnapToGrid" value="false"/>
+<vectornator:setting key="WDSnapToPoints" value="false"/>
+<vectornator:setting key="WDUnits" value="Pixels"/>
+</metadata>
+<defs>
+<clipPath id="TextBounds">
+<rect height="194" width="214.3" x="49.1806" y="-24.4635"/>
+</clipPath>
+<linearGradient gradientTransform="matrix(1 0 0 1 0 0)" gradientUnits="userSpaceOnUse" id="LinearGradient" x1="49.1806" x2="263.481" y1="72.5365" y2="72.5365">
+<stop offset="0" stop-color="#306565"/>
+<stop offset="1" stop-color="#00f6ff"/>
+</linearGradient>
+<filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="94.9" id="Filter" width="210.1" x="51.2714" y="25.3949">
+<feDropShadow dx="-0.609218" dy="0.558375" flood-color="#00ffce" flood-opacity="0.184694" in="SourceGraphic" result="Shadow" stdDeviation="5"/>
+</filter>
+<clipPath id="TextBounds_2">
+<rect height="117" width="121.86" x="252.108" y="28.5725"/>
+</clipPath>
+<filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="66.02" id="Filter_2" width="129.56" x="246.599" y="53.8309">
+<feDropShadow dx="-0.609218" dy="0.558375" flood-color="#fff100" flood-opacity="0.503239" in="SourceGraphic" result="Shadow" stdDeviation="5"/>
+</filter>
+</defs>
+<clipPath id="ArtboardFrame">
+<rect height="150" width="400" x="0" y="0"/>
+</clipPath>
+<g clip-path="url(#ArtboardFrame)" id="Layer-1" vectornator:layerName="Layer 1">
+<path d="M-0.435588-0.861131L402.165-0.861131L402.165 153.093L-0.435588 153.093L-0.435588-0.861131Z" fill="#202020" fill-rule="evenodd" opacity="1" stroke="none"/>
+<g fill="url(#LinearGradient)" filter="url(#Filter)" stroke="none" vectornator:shadowAngle="2.39971" vectornator:shadowColor="#00ffce" vectornator:shadowOffset="0.826395" vectornator:shadowOpacity="0.184694" vectornator:shadowRadius="10">
+<path clip-path="url(#TextBounds)" d="M66.5806 79.9365L79.6806 79.9365C96.1806 79.9365 106.881 74.1365 106.881 57.1365C106.881 45.6365 101.281 36.1365 82.7806 36.1365L61.8806 36.1365L61.8806 108.536L66.5806 108.536L66.5806 79.9365ZM66.5806 75.6365L66.5806 40.2365L81.3806 40.2365C95.9806 40.2365 101.781 45.7365 101.781 57.0365C101.781 73.1365 92.0806 75.6365 79.7806 75.6365L66.5806 75.6365Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds)" d="M175.181 108.536L175.181 36.1365L170.581 36.1365L170.581 103.236L130.781 36.1365L123.081 36.1365L123.081 108.536L127.781 108.536L127.781 40.2365L168.681 108.536L175.181 108.536Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds)" d="M247.881 108.536L251.581 108.536L251.581 71.1365L223.881 71.1365L223.881 75.6365L247.381 75.6365L247.381 84.3365C247.381 94.1365 239.781 105.636 224.981 105.636C211.481 105.636 198.281 99.6365 198.281 72.6365C198.281 51.0365 208.981 38.9365 226.081 38.9365C238.181 38.9365 245.781 43.6365 247.381 58.5365L251.981 58.0365C250.581 41.7365 241.081 34.8365 226.381 34.8365C206.681 34.8365 193.381 47.4365 193.381 73.0365C193.381 94.7365 202.581 109.736 224.381 109.736C236.381 109.736 244.381 103.736 247.081 97.0365L247.881 108.536Z" fill-rule="evenodd"/>
+</g>
+<g fill="#e5e5e5" filter="url(#Filter_2)" stroke="none" vectornator:shadowAngle="2.39971" vectornator:shadowColor="#fff100" vectornator:shadowOffset="0.826395" vectornator:shadowOpacity="0.503239" vectornator:shadowRadius="10">
+<path clip-path="url(#TextBounds_2)" d="M270.708 109.293C276.048 109.293 281.268 106.713 282.408 100.173L279.408 99.5725C278.568 104.373 275.328 106.533 270.648 106.533C265.548 106.533 260.268 103.893 260.268 93.0325C260.268 82.9525 265.908 80.0725 271.008 80.0725C275.928 80.0725 278.448 82.5325 278.988 87.7525L282.168 87.3925C281.868 80.7925 277.128 77.4925 271.368 77.4925C262.488 77.4925 257.208 82.7125 257.208 93.4525C257.208 102.693 260.688 109.293 270.708 109.293Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds_2)" d="M293.928 84.9925C295.908 83.1325 300.708 80.1325 304.728 80.1325C309.648 80.1325 310.488 83.0725 310.488 88.2325L310.488 108.573L313.428 108.573L313.428 88.1125C313.428 86.9125 313.368 85.7125 313.188 84.6325C315.468 82.7725 319.848 80.1325 323.688 80.1325C328.608 80.1325 329.388 83.0725 329.388 88.2325L329.388 108.573L332.328 108.573L332.328 88.1125C332.328 81.2125 330.648 77.4925 323.988 77.4925C319.728 77.4925 316.128 79.5925 312.648 82.1125C311.628 79.1725 309.408 77.4925 305.088 77.4925C300.768 77.4925 297.348 79.5325 293.868 82.1125L293.628 78.0925L290.988 78.0925L290.988 108.573L293.928 108.573L293.928 84.9925Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds_2)" d="M366.768 63.2725L363.768 63.2725L363.768 80.4925C361.428 78.8725 358.188 77.4925 354.588 77.4925C347.508 77.4925 341.508 81.8725 341.508 93.6325C341.508 104.853 346.308 109.293 353.088 109.293C357.768 109.293 361.008 107.433 363.948 105.093L364.248 108.573L366.768 108.573L366.768 63.2725ZM363.828 102.093C361.548 104.553 357.828 106.713 353.688 106.713C347.508 106.713 344.628 102.393 344.628 93.6925C344.628 85.5325 347.148 80.1325 354.528 80.1325C358.608 80.1325 362.268 82.2325 363.828 83.4325L363.828 102.093Z" fill-rule="evenodd"/>
+</g>
+</g>
+</svg>

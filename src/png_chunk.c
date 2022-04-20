@@ -1,4 +1,4 @@
-#include "png-chunks.h"
+#include "png-cmd.h"
 
 // If max_length == 0 we assume the developer intended to specify
 // 'unlimited' and disregard the buffer's size.

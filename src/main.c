@@ -1,4 +1,4 @@
-#include "png-chunks.h"
+#include "png-cmd.h"
 
 BOOL parse_ihdr( BYTE* data, ihdr_data* output_buffer ) {
 	if ( data == nullptr || output_buffer == nullptr ) {

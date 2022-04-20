@@ -30,10 +30,10 @@ under ``/AFL/samples``) and an empty output directory (``/AFL/results``).
 
 ```bash
 # Compile the project
-afl-gcc src/main.c src/utilities.c src/png_chunk.c -o png-chunks-afl.out -ggdb
+afl-gcc src/main.c src/utilities.c src/png_chunk.c -o png-cmd-afl -ggdb
 
 # Start fuzzing
-afl-fuzz -i AFL/samples/ -o AFL/results ./png-chunks-afl.out @@ -s eXIF
+afl-fuzz -i AFL/samples/ -o AFL/results ./png-cmd-afl @@ -s eXIF
 ```
 
-Fuzzing has not been thoroughly tested on MacOS but it does work on Ubuntu (stable).
+AFL isn't natively supported on/by MacOS but it does work on Linux.
