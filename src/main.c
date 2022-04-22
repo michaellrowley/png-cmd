@@ -108,10 +108,9 @@ int main( int argc, char** argv ) {
 	}
 
 	// The first bytes of a PNG should be 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x1A, 0x0A
-	BYTE* magic_bytes_buffer = (BYTE*)malloc( 8 );
+	BYTE magic_bytes_buffer[ 8 ];
 	if ( !read_bytes( png_handle, 8, magic_bytes_buffer ) ) {
 		fclose( png_handle );
-		free( magic_bytes_buffer );
 		printf( "Unable to read the first seven bytes of '%s'.\n", argv[ 1 ] );
 		return 1;
 	}
@@ -122,12 +121,11 @@ int main( int argc, char** argv ) {
 		(long unsigned int)7 ) != 0 ) {
 		printf( "Unable to verify that the provided file ('%s') is a PNG.\n", argv[1] );
 		fclose( png_handle );
-		free( magic_bytes_buffer );
 		return 1;
 	}
-	free( magic_bytes_buffer );
 
 	if ( argc == 2 ) {
+		// ./program image.png
 		list_ancillary_full( png_handle );
 	}
 	else {
