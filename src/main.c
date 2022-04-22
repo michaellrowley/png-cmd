@@ -92,14 +92,12 @@ int main( int argc, char** argv ) {
 	// Check that the provided file is a 'regular' file
 	// (not a symbolic link, directory, device, or something
 	// else).
-	struct stat* png_stat = (struct stat*)calloc( 1, sizeof( struct stat ) );
-	if ( png_stat == nullptr || stat( argv[ 1 ], png_stat ) == -1 ||
-		!S_ISREG( png_stat->st_mode ) ) {
-		free( png_stat );
+	struct stat png_stat;
+	if ( &png_stat == nullptr || stat( argv[ 1 ], &png_stat ) == -1 ||
+		!S_ISREG( png_stat.st_mode ) ) {
 		printf( "Unable to validate the filetype of file '%s'.\n", argv[1] );
 		return 1;
 	}
-	free( png_stat ); // Only needed png_stat to check file-type.
 
 	const FILE* png_handle = fopen( argv[ 1 ], "r+" );
 	if ( !png_handle ) {
