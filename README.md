@@ -4,7 +4,6 @@
 ![Issues](https://img.shields.io/github/issues/michaellrowley/png-chunks)
 ![Codacy Badge](https://app.codacy.com/project/badge/Grade/ceb6a531a53b4e6b92cae63f99c6b543)
 ![License](https://img.shields.io/github/license/michaellrowley/png-chunks)
-![Twitter](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2Fmichaellrowley%2Fpng-chunks)
 
 A small tool utility to help users manage
 [PNG files](https://en.wikipedia.org/wiki/Portable_Network_Graphics)
@@ -103,8 +102,4 @@ gcc src/main.c src/utilities.c src/png_chunk.c -o png-cmd-dbg -ggdb -v
 
 ### General usage
 
-From within the root repository directory:
-
-```bash
-./build.sh # gcc src/main.c src/utilities.c src/png_chunk.c -o png-cmd -w -Ofast
-```
+From within the root repository directory, just run ``make`` which should use the [makefile](https://github.com/michaellrowley/png-cmd/blob/main/makefile) to compile the program and leave the executable as ``png-cmd``.
