@@ -168,6 +168,7 @@ int main( int argc, char** argv ) {
 			}
 			else {
 				printf( "Invalid amount of arguments %s.\n", operation );
+				fclose( png_handle );
 				return 1;
 			}
 		}
